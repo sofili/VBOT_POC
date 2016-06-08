@@ -163,20 +163,28 @@ app.listen(app.get('port'));
 app.use(bodyParser.json());
 
 // Webhook setup
-app.get('/fb', (req, res) => {
-  if (!FB_VERIFY_TOKEN) {
-    throw new Error('missing FB_VERIFY_TOKEN');
-  }
-  if (req.query['hub.mode'] === 'subscribe' &&
-    req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {
-    res.send(req.query['hub.challenge']);
-  } else {
-    res.sendStatus(400);
-  }
+// Facebook Webhook
+app.get('/webhook', function (req, res) {
+    if (req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {
+        res.send(req.query['hub.challenge']);
+    } else {
+        res.send('Invalid verify token');
+    }
 });
+// app.get('/fb', (req, res) => {
+//   if (!FB_VERIFY_TOKEN) {
+//     throw new Error('missing FB_VERIFY_TOKEN');
+//   }
+//   if (req.query['hub.mode'] === 'subscribe' &&
+//     req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {
+//     res.send(req.query['hub.challenge']);
+//   } else {
+//     res.sendStatus(400);
+//   }
+// });
 
 // Message handler
-app.post('/fb', (req, res) => {
+app.post('/webhook', (req, res) => {
   // Parsing the Messenger API response
   const messaging = getFirstMessagingEntry(req.body);
   if (messaging && messaging.message && messaging.recipient.id === FB_PAGE_ID) {
