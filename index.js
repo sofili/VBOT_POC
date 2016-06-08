@@ -162,6 +162,11 @@ app.set('port', PORT);
 app.listen(app.get('port'));
 app.use(bodyParser.json());
 
+// Server frontpage
+app.get('/', function (req, res) {
+    res.send('This is TestBot Server');
+});
+
 // Webhook setup
 // Facebook Webhook
 app.get('/webhook', function (req, res) {
