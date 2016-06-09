@@ -140,7 +140,7 @@ var request = require('request');
 // };
 
 // Setting up our bot
-const wit = new Wit(WIT_TOKEN, actions);
+// const wit = new Wit(WIT_TOKEN, actions);
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
