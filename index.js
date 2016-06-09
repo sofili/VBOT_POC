@@ -42,23 +42,23 @@ const fbReq = request.defaults({
   headers: {'Content-Type': 'application/json'},
 });
 
-// const fbMessage = (recipientId, msg, cb) => {
-//   const opts = {
-//     form: {
-//       recipient: {
-//         id: recipientId,
-//       },
-//       message: {
-//         text: msg,
-//       },
-//     },
-//   };
-//   fbReq(opts, (err, resp, data) => {
-//     if (cb) {
-//       cb(err || data.error && data.error.message, data);
-//     }
-//   });
-// };
+const fbMessage = (recipientId, msg, cb) => {
+  const opts = {
+    form: {
+      recipient: {
+        id: recipientId,
+      },
+      message: {
+        text: msg,
+      },
+    },
+  };
+  fbReq(opts, (err, resp, data) => {
+    if (cb) {
+      cb(err || data.error && data.error.message, data);
+    }
+  });
+};
 
 // // See the Webhook reference
 // // https://developers.facebook.com/docs/messenger-platform/webhook-reference
