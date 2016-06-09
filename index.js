@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   Logger: require('./lib/logger.js').Logger,
   logLevels: require('./lib/logger.js').logLevels,
