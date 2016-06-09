@@ -10,7 +10,7 @@ module.exports = {
 
 // Webserver parameter
 const PORT = process.env.PORT || 8445;
-const Wit = require('lib/wit.js').Wit
+// const Wit = require('lib/wit.js').Wit
 // Wit.ai parameters
 const WIT_TOKEN = '2T7FBUGWU3EZMQI5LR6TOZ7XJT3PP47W';
 
@@ -138,15 +138,10 @@ const FB_VERIFY_TOKEN = 'testbot_verify_token';
 // const wit = new Wit(WIT_TOKEN, actions);
 
 // Starting our webserver and putting it all together
-const app = express();
-app.set('port', PORT);
-app.listen(app.get('port'));
-app.use(bodyParser.json());
-
 var express = require('express');
 var bodyParser = require('body-parser');
 var request = require('request');
-var app = express();
+const app = express();
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
