@@ -25,10 +25,10 @@ const request = require('request');
 
 // When not cloning the `node-wit` repo, replace the `require` like so:
 // const Wit = require('node-wit').Wit;
-const Wit = require('../').Wit;
+const Wit = require('VBOT_POC/').Wit;
 
 // Webserver parameter
-const PORT = process.env.PORT || 8445;
+const PORT = process.env.PORT || 3000;
 
 // Wit.ai parameters
 const WIT_TOKEN = '2T7FBUGWU3EZMQI5LR6TOZ7XJT3PP47W';
