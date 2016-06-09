@@ -163,33 +163,93 @@ app.get('/webhook', function (req, res) {
     }
 });
 
-// handler receiving messages
-app.post('/webhook', function (req, res) {
-    var events = req.body.entry[0].messaging;
-    for (i = 0; i < events.length; i++) {
-        var event = events[i];
-        if (event.message && event.message.text) {
-            sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
-        }
-    }
-    res.sendStatus(200);
-});
+// // handler receiving messages
+// app.post('/webhook', function (req, res) {
+//     var events = req.body.entry[0].messaging;
+//     for (i = 0; i < events.length; i++) {
+//         var event = events[i];
+//         if (event.message && event.message.text) {
+//             sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
+//         }
+//     }
+//     res.sendStatus(200);
+// });
 
-// generic function sending messages
-function sendMessage(recipientId, message) {
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
-        method: 'POST',
-        json: {
-            recipient: {id: recipientId},
-            message: message,
+// // generic function sending messages
+// function sendMessage(recipientId, message) {
+//     request({
+//         url: 'https://graph.facebook.com/v2.6/me/messages',
+//         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
+//         method: 'POST',
+//         json: {
+//             recipient: {id: recipientId},
+//             message: message,
+//         }
+//     }, function(error, response, body) {
+//         if (error) {
+//             console.log('Error sending message: ', error);
+//         } else if (response.body.error) {
+//             console.log('Error: ', response.body.error);
+//         }
+//     });
+// };
+
+// Message handler
+app.post('/webhook', (req, res) => {
+  // Parsing the Messenger API response
+  const messaging = getFirstMessagingEntry(req.body);
+  if (messaging && messaging.message && messaging.recipient.id === FB_PAGE_ID) {
+    // Yay! We got a new message!
+
+    // We retrieve the Facebook user ID of the sender
+    const sender = messaging.sender.id;
+
+    // We retrieve the user's current session, or create one if it doesn't exist
+    // This is needed for our bot to figure out the conversation history
+    const sessionId = findOrCreateSession(sender);
+
+    // We retrieve the message content
+    const msg = messaging.message.text;
+    const atts = messaging.message.attachments;
+
+    if (atts) {
+      // We received an attachment
+
+      // Let's reply with an automatic message
+      fbMessage(
+        sender,
+        'Sorry I can only process text messages for now.'
+      );
+    } else if (msg) {
+      // We received a text message
+
+      // Let's forward the message to the Wit.ai Bot Engine
+      // This will run all actions until our bot has nothing left to do
+      wit.runActions(
+        sessionId, // the user's current session
+        msg, // the user's message 
+        sessions[sessionId].context, // the user's current session state
+        (error, context) => {
+          if (error) {
+            console.log('Oops! Got an error from Wit:', error);
+          } else {
+            // Our bot did everything it has to do.
+            // Now it's waiting for further messages to proceed.
+            console.log('Waiting for futher messages.');
+
+            // Based on the session state, you might want to reset the session.
+            // This depends heavily on the business logic of your bot.
+            // Example:
+            // if (context['done']) {
+            //   delete sessions[sessionId];
+            // }
+
+            // Updating the user's current session state
+            sessions[sessionId].context = context;
+          }
         }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending message: ', error);
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error);
-        }
-    });
-};
+      );
+    }
+  }
+  res.sendStatus(200);
+});
