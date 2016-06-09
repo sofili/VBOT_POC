@@ -141,7 +141,7 @@ const actions = {
   // See https://wit.ai/docs/quickstart
 };
 
-Setting up our bot
+// Setting up our bot
 const wit = new Wit(WIT_TOKEN, actions);
 
 const app = express();
