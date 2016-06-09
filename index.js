@@ -25,35 +25,41 @@ if (!FB_PAGE_TOKEN) {
 }
 const FB_VERIFY_TOKEN = 'testbot_verify_token';
 
+// Starting our webserver and putting it all together
+var express = require('express');
+var bodyParser = require('body-parser');
+var request = require('request');
+const app = express();
+
 // Messenger API specific code
 
 // See the Send API reference
 // https://developers.facebook.com/docs/messenger-platform/send-api-reference
-// const fbReq = request.defaults({
-//   uri: 'https://graph.facebook.com/me/messages',
-//   method: 'POST',
-//   json: true,
-//   qs: { access_token: FB_PAGE_TOKEN },
-//   headers: {'Content-Type': 'application/json'},
-// });
+const fbReq = request.defaults({
+  uri: 'https://graph.facebook.com/me/messages',
+  method: 'POST',
+  json: true,
+  qs: { access_token: FB_PAGE_TOKEN },
+  headers: {'Content-Type': 'application/json'},
+});
 
-// const fbMessage = (recipientId, msg, cb) => {
-//   const opts = {
-//     form: {
-//       recipient: {
-//         id: recipientId,
-//       },
-//       message: {
-//         text: msg,
-//       },
-//     },
-//   };
-//   fbReq(opts, (err, resp, data) => {
-//     if (cb) {
-//       cb(err || data.error && data.error.message, data);
-//     }
-//   });
-// };
+const fbMessage = (recipientId, msg, cb) => {
+  const opts = {
+    form: {
+      recipient: {
+        id: recipientId,
+      },
+      message: {
+        text: msg,
+      },
+    },
+  };
+  fbReq(opts, (err, resp, data) => {
+    if (cb) {
+      cb(err || data.error && data.error.message, data);
+    }
+  });
+};
 
 // // See the Webhook reference
 // // https://developers.facebook.com/docs/messenger-platform/webhook-reference
@@ -137,11 +143,7 @@ const FB_VERIFY_TOKEN = 'testbot_verify_token';
 // // Setting up our bot
 // const wit = new Wit(WIT_TOKEN, actions);
 
-// Starting our webserver and putting it all together
-var express = require('express');
-var bodyParser = require('body-parser');
-var request = require('request');
-const app = express();
+
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
