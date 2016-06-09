@@ -132,6 +132,11 @@ const actions = {
     }
   },
   merge(sessionId, context, entities, message, cb) {
+  	// Retrieve the location entity and store it into a context field
+    const loc = firstEntityValue(entities, 'wit_movieTitle');
+    if (loc) {
+      context.loc = loc;
+    }
     cb(context);
   },
   error(sessionId, context, error) {
@@ -139,6 +144,23 @@ const actions = {
   },
   // You should implement your custom actions here
   // See https://wit.ai/docs/quickstart
+  ['fetch-top-movies'](sessionId, context, cb) {
+    // Here should go the api call, e.g.:
+    // context.forecast = apiCall(context.loc)
+    context.title = 'Deadpool';
+    cb(context);
+  },
+  ['find-movie'](sessionId, context, cb) {
+    //context.url = "http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/" + context.loc
+    context.title = sendSearchResult(context.loc) // apicall(url)
+    cb(context)
+  },
+  ['similar-movie'](sessionId, context, cb) {
+    // context.url = "http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/" + context.loc
+    context.title = "Superman" // apicall(url)
+    cb(context)
+
+  }
 };
 
 // Setting up our bot
@@ -253,3 +275,34 @@ app.post('/webhook', (req, res) => {
   }
   res.sendStatus(200);
 });
+
+function sendSearchResult(text) {
+
+  console.log('send search result for ' + text);
+  // var search = text.substring(12, text.lenght);
+  var encodedSearch = encodeURIComponent(text);
+  console.log('type of encoded search :', typeof encodedSearch);
+  console.log('encoded search: ', encodedSearch);
+
+  var url_s = `http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/count/1/dimensionality/any/followup/ratingsSummaries/includeComingSoon/true/includePreOrders/true/offset/0/streamable/true/titleMagic/${encodedSearch}/type/program/type/season/type/episode/type/bundle/type/bonus/type/series`;
+  console.log('type of url: ', typeof url_s);
+
+  request({
+    url: url_s,
+    method: 'GET'
+  }, function(error, response, body) {
+    if (error) {
+      console.log('*******Error sending message: ', error);
+    } else if (response.body) {
+      var sub = response.body.substring(10, response.body.length - 2);
+      var evaluation = eval('(' + sub + ')');
+
+      var id1 = evaluation.content[0].contentId[0];
+      var title1 = evaluation.content[0].title[0];
+      var description1 = evaluation.content[0].description[0];
+
+      console.log("found it! " + title1);
+      return title1;
+    }
+  });
+};
