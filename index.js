@@ -6,6 +6,7 @@ module.exports = {
   Wit: require('./lib/wit.js').Wit,
 }
 
+const logger = new Logger(logLevels.DEBUG);
 // When not cloning the `node-wit` repo, replace the `require` like so:
 // const Wit = require('node-wit').Wit;
 // const Wit = require('node-wit').Wit;
@@ -298,17 +299,28 @@ app.post('/webhook', (req, res) => {
             
             var testData = getTestFBResponse();
             console.log('sending to fb:' + JSON.stringify(testData));
-            sessions[sessionId].context = testData; // context
+            context['text'] = 'Sophia is awesome';
+            sessions[sessionId].context = context; // context
           }
         }
       );
+
+      // wit.converse(
+      // 	sessionId,
+      // 	msg,
+      // 	sessions[sessionId].context,
+      // 	(error, context) => {
+
+      // 	}
+
+      // );
     }
   }
   res.sendStatus(200);
 });
 
 function getTestFBResponse() {
-	messageData = {
+	return {
     "attachment": {
       "type": "template",
       "payload": {
@@ -339,8 +351,6 @@ function getTestFBResponse() {
       }
     }
   };
-
-  return messageData;
 
 }
 
