@@ -163,9 +163,12 @@ const actions = {
     context.title = getTopMovie();
     cb(context);
   },
-  ['get-response'](sessionId, context, cb) {
+   ['get-response'](sessionId, context, cb) {
     var intent = context.intent;
     var movieTitle = context.movieTitle;
+
+    console.log('intent:' + intent);
+    console.log('movieTitle:' + movieTitle);
 
     if (intent == 'watch') {
       if (movieTitle) {
@@ -180,7 +183,9 @@ const actions = {
     else if (intent == 'review') {
       if (movieTitle) {
         // review of a movie
+        console.log('before context:' + context);
         getTomatoReview(movieTitle, cb)
+        
       }
       else {
         // recommendation
@@ -197,6 +202,7 @@ const actions = {
       // recommendation
       context.title = getTopMovie();
     }
+    
   },
   ['find-movie'](sessionId, context, cb) {
     context.title = getMovieInfo(context.movieTitle);
