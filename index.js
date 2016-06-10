@@ -295,7 +295,7 @@ app.post('/webhook', (req, res) => {
             // }
 
             // Updating the user's current session state
-            console.log('sending to fb:' + stringify(context));
+            console.log('sending to fb:' + JSON.stringify(context));
             sessions[sessionId].context = context;
           }
         }
