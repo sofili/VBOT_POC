@@ -479,9 +479,9 @@ function getTomatoReview(text, cb) {
             var randomNum = 0;
             var totalCount = evaluation.totalCount[0];
 
-            if (totalCount) {
-              randomNum = getRandomInt(0,totalCount - 1);
-            }
+            // if (totalCount) {
+            //   randomNum = getRandomInt(0,totalCount - 1);
+            // }
             var response = {'author' : evaluation.tomatoReview[randomNum].author[0],
             'comment' : evaluation.tomatoReview[randomNum].comment[0],
             'source' : evaluation.tomatoReview[randomNum].source[0],
