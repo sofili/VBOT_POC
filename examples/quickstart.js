@@ -53,7 +53,7 @@ const actions = {
     console.log(error.message);
   },
    
-  ['fetch-top-movies'](sessionId, context, cb) {
+  ['fetch-top-moviess'](sessionId, context, cb) {
     // Here should go the api call, e.g.:
     // context.forecast = apiCall(context.loc)
     context.title = getTopMovie();
@@ -63,6 +63,9 @@ const actions = {
     var intent = context.intent;
     var movieTitle = context.movieTitle;
 
+    console.log('intent:' + intent);
+    console.log('movieTitle:' + movieTitle);
+
     if (intent == 'watch') {
       if (movieTitle) {
         // return closest movie
@@ -70,38 +73,35 @@ const actions = {
       }
       else {
         // recommendation
-        content.title = getTopMovie();
+        context.title = getTopMovie();
       }
     } 
     else if (intent == 'review') {
       if (movieTitle) {
         // review of a movie
-        context.review = getTomatoReview(movieTitle)
+        console.log('before context:' + context);
+        getTomatoReview(movieTitle, cb)
+        
       }
       else {
         // recommendation
-        content.title = getTopMovie();
+        context.title = getTopMovie();
       }
 
 
     }
     else if (intent == 'recommendation') {
       // recommendation
-      content.title = getTopMovie();
+      context.title = getTopMovie();
     }
     else {
       // recommendation
-      content.title = getTopMovie();
+      context.title = getTopMovie();
     }
-
-    cb(context);
+    
   },
   ['find-movie'](sessionId, context, cb) {
     context.title = getMovieInfo(context.movieTitle);
-    cb(context);
-  },
-  ['get-review'](sessionId, context, cb) {
-    context.review = getTomatoReview(context.movieTitle);
     cb(context);
   },
   ['similar-movie'](sessionId, context, cb) {
@@ -158,8 +158,9 @@ function getTopMovie() {
     } else if (response.body) {
       var sub = response.body.substring(10, response.body.length - 2);
       var evaluation = eval('(' + sub + ')');
-      
-      var randomNum = getRandomInt(1,30);
+      // console.log('response:' + response.body);
+      var randomNum = getRandomInt(1,15);
+      console.log('random #:' + randomNum);
       var id = evaluation.content[randomNum].contentId[0];
       var title = evaluation.content[randomNum].title[0];
       var description = evaluation.content[randomNum].description[0];
@@ -200,7 +201,7 @@ function getMovieInfo(text) {
 
         // Need to handle if there's no review
 
-        console.log("found it! " + title + "/id:" + contentId);
+       console.log("found it! " + title + "/id:" + contentId);
 
         var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/contentId/' + contentId ;
 
@@ -236,7 +237,7 @@ function getMovieInfo(text) {
 
 };
 
-function getTomatoReview(text) {
+function getTomatoReview(text, cb) {
 
   console.log('send search result for ' + text);
   // var search = text.substring(12, text.lenght);
@@ -244,7 +245,7 @@ function getTomatoReview(text) {
   console.log('type of encoded search :', typeof encodedSearch);
   console.log('encoded search: ', encodedSearch);
 
-  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/titleMagic/' + encodedSearch +'/count/3/type/program/sortBy/tomatoMeter';
+  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true';
   
   request({
     url: url_s,
@@ -256,19 +257,18 @@ function getTomatoReview(text) {
       var sub = response.body.substring(10, response.body.length - 2);
       var evaluation = eval('(' + sub + ')');
 
-      console.log('result:' + response.body);
+      // console.log('result:' + response.body);
       // get first search result
 
       try {
         var contentId = evaluation.content[0].contentId[0];
         var title = evaluation.content[0].title[0];
-        var description = evaluation.content[0].description[0];
 
         // Need to handle if there's no review
 
         console.log("found it! " + title + "/id:" + contentId);
 
-        var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/authorRank/count/1';
+        var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/isByTopAuthor/followup/totalCount';
 
         request({
           url: url_review,
@@ -280,20 +280,31 @@ function getTomatoReview(text) {
             var sub = response.body.substring(10, response.body.length - 2);
             var evaluation = eval('(' + sub + ')');
             
-            // var randomNum = getRandomInt(1,30);
-            var author = evaluation.tomatoReview[0].author[0];
-            var comment = evaluation.tomatoReview[0].comment[0];
-            var source = evaluation.tomatoReview[0].source[0];
-            var reviewURL = evaluation.tomatoReview[0].url[0];
+            console.log('result:' + response.body);
 
-            console.log("found review! " + comment);
-            return comment;
+            var randomNum = 0;
+            var totalCount = evaluation.totalCount[0];
+
+            // if (totalCount) {
+            //   randomNum = getRandomInt(0,totalCount - 1);
+            // }
+            var response = {'author' : evaluation.tomatoReview[randomNum].author[0],
+            'comment' : evaluation.tomatoReview[randomNum].comment[0],
+            'source' : evaluation.tomatoReview[randomNum].source[0],
+            'reviewURL' : evaluation.tomatoReview[randomNum].url[0]
+
+             };
+            // var response['author'] = evaluation.tomatoReview[randomNum].author[0];
+
+
+            console.log("found review! " + response.comment + ' By:' + response.author + ' Source:' + response.source + ' reviewURL:' + response.reviewURL);
+            cb(response);
           }
         });
       }
       catch(err) {
-
-        return "Sorry! No Review!";
+        response.comment = 'Sorry! No reviews!';
+        cb(response);
       }
 
 
@@ -302,30 +313,30 @@ function getTomatoReview(text) {
 }
 
 
-function getSimilarMovie(contentId) {
-  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10';
+// function getSimilarMovie(contentId) {
+//   var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10';
 
-  request({
-    url: url_s,
-    method: 'GET'
-  }, function(error, response, body) {
-    if (error) {
-      console.log('*******Error sending message: ', error);
-    } else if (response.body) {
-      var sub = response.body.substring(10, response.body.length - 2);
-      var evaluation = eval('(' + sub + ')');
+//   request({
+//     url: url_s,
+//     method: 'GET'
+//   }, function(error, response, body) {
+//     if (error) {
+//       console.log('*******Error sending message: ', error);
+//     } else if (response.body) {
+//       var sub = response.body.substring(10, response.body.length - 2);
+//       var evaluation = eval('(' + sub + ')');
       
-      var randomNum = getRandomInt(1,10);
-      var title = evaluation.content[randomNum].title[0];
-      var contentId = evaluation.content[randomNum].contentId[0];
-      var description = evaluation.content[randomNum].description[0];
+//       var randomNum = getRandomInt(1,10);
+//       var title = evaluation.content[randomNum].title[0];
+//       var contentId = evaluation.content[randomNum].contentId[0];
+//       var description = evaluation.content[randomNum].description[0];
 
-      console.log("found similar movie! " + title);
-      return title;
-    }
-  });
+//       console.log("found similar movie! " + title);
+//       return title;
+//     }
+//   });
 
-}
+// }
 
 
 
