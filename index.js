@@ -145,9 +145,14 @@ const actions = {
   },
   merge(sessionId, context, entities, message, cb) {
   	// Retrieve the location entity and store it into a context field
-    const loc = firstEntityValue(entities, 'wit_movieTitle');
-    if (loc) {
-      context.loc = loc;
+    const movieTitle = firstEntityValue(entities, 'wit_movieTitle');
+    if (movieTitle) {
+      context.movieTitle = movieTitle;
+    }
+
+    const intent = firstEntityValue(entities, 'intent');
+    if (intent) {
+      context.intent = intent;
     }
     cb(context);
   },
