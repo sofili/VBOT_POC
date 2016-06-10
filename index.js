@@ -482,22 +482,30 @@ function getTomatoReview(text, cb) {
             // if (totalCount) {
             //   randomNum = getRandomInt(0,totalCount - 1);
             // }
-            var response = {'author' : evaluation.tomatoReview[randomNum].author[0],
-            'comment' : evaluation.tomatoReview[randomNum].comment[0],
-            'source' : evaluation.tomatoReview[randomNum].source[0],
-            'reviewURL' : evaluation.tomatoReview[randomNum].url[0]
 
-             };
-            // var response['author'] = evaluation.tomatoReview[randomNum].author[0];
+            try {
+	            var response = {'author' : evaluation.tomatoReview[randomNum].author[0],
+	            'comment' : evaluation.tomatoReview[randomNum].comment[0],
+	            'source' : evaluation.tomatoReview[randomNum].source[0],
+	            'reviewURL' : evaluation.tomatoReview[randomNum].url[0]
+
+	             };
+	            // var response['author'] = evaluation.tomatoReview[randomNum].author[0];
 
 
-            console.log("found review! " + response.comment + ' By:' + response.author + ' Source:' + response.source + ' reviewURL:' + response.reviewURL);
-            cb(response);
+	            console.log("found review! " + response.comment + ' By:' + response.author + ' Source:' + response.source + ' reviewURL:' + response.reviewURL);
+	            cb(response);
+
+	         }
+	         catch(err) {
+	         	response.comment = 'Sorry! There is no review for ' + title;
+        		cb(response);
+	         }
           }
         });
       }
       catch(err) {
-        response.comment = 'Sorry! No reviews!';
+        response.comment = 'Sorry! Cannot find it on VUDU!';
         cb(response);
       }
 
