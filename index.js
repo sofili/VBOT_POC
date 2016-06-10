@@ -11,7 +11,6 @@ const logger = new Logger(logLevels.DEBUG);
 
 // Webserver parameter
 const PORT = process.env.PORT || 8445;
-const Wit = require('./lib/wit.js').Wit
 // Wit.ai parameters
 const WIT_TOKEN = '2T7FBUGWU3EZMQI5LR6TOZ7XJT3PP47W';
 
