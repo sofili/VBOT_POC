@@ -1,10 +1,8 @@
 'use strict';
 
-module.exports = {
-  Logger: require('./lib/logger.js').Logger,
-  logLevels: require('./lib/logger.js').logLevels,
-  Wit: require('./lib/wit.js').Wit,
-}
+const Logger: require('./lib/logger.js').Logger;
+const logLevels: require('./lib/logger.js').logLevels;
+const Wit: require('./lib/wit.js').Wit;
 
 const logger = new Logger(logLevels.DEBUG);
 // When not cloning the `node-wit` repo, replace the `require` like so:
