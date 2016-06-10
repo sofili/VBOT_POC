@@ -156,21 +156,63 @@ const actions = {
   },
   // You should implement your custom actions here
   // See https://wit.ai/docs/quickstart
+   
   ['fetch-top-movies'](sessionId, context, cb) {
     // Here should go the api call, e.g.:
     // context.forecast = apiCall(context.loc)
-    context.title = 'Deadpool';
+    context.title = getTopMovie();
+    cb(context);
+  },
+  ['get-response'](sessionId, context, cb) {
+    var intent = context.intent;
+    var movieTitle = context.movieTitle;
+
+    if (intent == 'watch') {
+      if (movieTitle) {
+        // return closest movie
+        context.title = getMovieInfo(movieTitle);
+      }
+      else {
+        // recommendation
+        content.title = getTopMovie();
+      }
+    } 
+    else if (intent == 'review') {
+      if (movieTitle) {
+        // review of a movie
+        context.review = getTomatoReview(movieTitle)
+      }
+      else {
+        // recommendation
+        content.title = getTopMovie();
+      }
+
+
+    }
+    else if (intent == 'recommendation') {
+      // recommendation
+      content.title = getTopMovie();
+    }
+    else {
+      // recommendation
+      content.title = getTopMovie();
+    }
+
     cb(context);
   },
   ['find-movie'](sessionId, context, cb) {
-    //context.url = "http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/" + context.loc
-    context.title = sendSearchResult(context.loc) // apicall(url)
-    cb(context)
+    context.title = getMovieInfo(context.movieTitle);
+    cb(context);
+  },
+  ['get-review'](sessionId, context, cb) {
+    context.review = getTomatoReview(context.movieTitle);
+    cb(context);
   },
   ['similar-movie'](sessionId, context, cb) {
     // context.url = "http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/" + context.loc
-    context.title = "Superman" // apicall(url)
-    cb(context)
+    contentId = sendSearchResult(context.movieTitle);
+    context.title = getSimilarMovie(contentId);
+    cb(context);
 
   }
 };
@@ -196,37 +238,6 @@ app.get('/webhook', function (req, res) {
         res.send('Invalid verify token');
     }
 });
-
-// // handler receiving messages
-// app.post('/webhook', function (req, res) {
-//     var events = req.body.entry[0].messaging;
-//     for (i = 0; i < events.length; i++) {
-//         var event = events[i];
-//         if (event.message && event.message.text) {
-//             sendMessage(event.sender.id, {text: "Echo: " + event.message.text});
-//         }
-//     }
-//     res.sendStatus(200);
-// });
-
-// // generic function sending messages
-// function sendMessage(recipientId, message) {
-//     request({
-//         url: 'https://graph.facebook.com/v2.6/me/messages',
-//         qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
-//         method: 'POST',
-//         json: {
-//             recipient: {id: recipientId},
-//             message: message,
-//         }
-//     }, function(error, response, body) {
-//         if (error) {
-//             console.log('Error sending message: ', error);
-//         } else if (response.body.error) {
-//             console.log('Error: ', response.body.error);
-//         }
-//     });
-// };
 
 // Message handler
 app.post('/webhook', (req, res) => {
@@ -308,13 +319,202 @@ function sendSearchResult(text) {
     } else if (response.body) {
       var sub = response.body.substring(10, response.body.length - 2);
       var evaluation = eval('(' + sub + ')');
+      // get first search result
+      var contentId = evaluation.content[0].contentId[0];
+      var title = evaluation.content[0].title[0];
+      var description = evaluation.content[0].description[0];
 
-      var id1 = evaluation.content[0].contentId[0];
-      var title1 = evaluation.content[0].title[0];
-      var description1 = evaluation.content[0].description[0];
-
-      console.log("found it! " + title1);
-      return title1;
+      console.log("found it! " + title + "id:" + contentId);
+      return contentId;
     }
   });
 };
+
+
+function getTopMovie() {
+
+  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/count/30/dimensionality/any/offset/0/sortBy/-watchedScore/superType/movies/type/program/type/bundle';
+
+  request({
+    url: url_s,
+    method: 'GET'
+  }, function(error, response, body) {
+    if (error) {
+      console.log('*******Error sending message: ', error);
+    } else if (response.body) {
+      var sub = response.body.substring(10, response.body.length - 2);
+      var evaluation = eval('(' + sub + ')');
+      
+      var randomNum = getRandomInt(1,30);
+      var id = evaluation.content[randomNum].contentId[0];
+      var title = evaluation.content[randomNum].title[0];
+      var description = evaluation.content[randomNum].description[0];
+
+      console.log("found it! " + title);
+      return title;
+    }
+  });
+};
+
+function getMovieInfo(text) {
+
+  console.log('send search result for ' + text);
+  // var search = text.substring(12, text.lenght);
+  var encodedSearch = encodeURIComponent(text);
+  console.log('type of encoded search :', typeof encodedSearch);
+  console.log('encoded search: ', encodedSearch);
+
+  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/titleMagic/' + encodedSearch +'/count/3/type/program/sortBy/tomatoMeter';
+  
+  request({
+    url: url_s,
+    method: 'GET'
+  }, function(error, response, body) {
+    if (error) {
+      console.log('*******Error sending message: ', error);
+    } else if (response.body) {
+      var sub = response.body.substring(10, response.body.length - 2);
+      var evaluation = eval('(' + sub + ')');
+
+      console.log('result:' + response.body);
+      // get first search result
+
+      try {
+        var contentId = evaluation.content[0].contentId[0];
+        var title = evaluation.content[0].title[0];
+        var description = evaluation.content[0].description[0];
+
+        // Need to handle if there's no review
+
+        console.log("found it! " + title + "/id:" + contentId);
+
+        var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/contentId/' + contentId ;
+
+        request({
+          url: url_s,
+          method: 'GET'
+        }, function(error, response, body) {
+          if (error) {
+            console.log('*******Error sending message: ', error);
+          } else if (response.body) {
+            var sub = response.body.substring(10, response.body.length - 2);
+            var evaluation = eval('(' + sub + ')');
+            
+            var randomNum = getRandomInt(1,30);
+            var id = evaluation.content[randomNum].contentId[0];
+            var title = evaluation.content[randomNum].title[0];
+            var description = evaluation.content[randomNum].description[0];
+
+            console.log("found search title! " + title);
+            return title;
+          }
+        });
+      }
+      catch(err) {
+
+        return "Sorry! No movie found!";
+      }
+
+
+      }
+    });
+
+
+};
+
+function getTomatoReview(text) {
+
+  console.log('send search result for ' + text);
+  // var search = text.substring(12, text.lenght);
+  var encodedSearch = encodeURIComponent(text);
+  console.log('type of encoded search :', typeof encodedSearch);
+  console.log('encoded search: ', encodedSearch);
+
+  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/titleMagic/' + encodedSearch +'/count/3/type/program/sortBy/tomatoMeter';
+  
+  request({
+    url: url_s,
+    method: 'GET'
+  }, function(error, response, body) {
+    if (error) {
+      console.log('*******Error sending message: ', error);
+    } else if (response.body) {
+      var sub = response.body.substring(10, response.body.length - 2);
+      var evaluation = eval('(' + sub + ')');
+
+      console.log('result:' + response.body);
+      // get first search result
+
+      try {
+        var contentId = evaluation.content[0].contentId[0];
+        var title = evaluation.content[0].title[0];
+        var description = evaluation.content[0].description[0];
+
+        // Need to handle if there's no review
+
+        console.log("found it! " + title + "/id:" + contentId);
+
+        var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/authorRank/count/1';
+
+        request({
+          url: url_review,
+          method: 'GET'
+        }, function(error, response, body) {
+          if (error) {
+            console.log('*******Error sending message: ', error);
+          } else if (response.body) {
+            var sub = response.body.substring(10, response.body.length - 2);
+            var evaluation = eval('(' + sub + ')');
+            
+            // var randomNum = getRandomInt(1,30);
+            var author = evaluation.tomatoReview[0].author[0];
+            var comment = evaluation.tomatoReview[0].comment[0];
+            var source = evaluation.tomatoReview[0].source[0];
+            var reviewURL = evaluation.tomatoReview[0].url[0];
+
+            console.log("found review! " + comment);
+            return comment;
+          }
+        });
+      }
+      catch(err) {
+
+        return "Sorry! No Review!";
+      }
+
+
+      }
+    });
+}
+
+
+function getSimilarMovie(contentId) {
+  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10';
+
+  request({
+    url: url_s,
+    method: 'GET'
+  }, function(error, response, body) {
+    if (error) {
+      console.log('*******Error sending message: ', error);
+    } else if (response.body) {
+      var sub = response.body.substring(10, response.body.length - 2);
+      var evaluation = eval('(' + sub + ')');
+      
+      var randomNum = getRandomInt(1,10);
+      var title = evaluation.content[randomNum].title[0];
+      var contentId = evaluation.content[randomNum].contentId[0];
+      var description = evaluation.content[randomNum].description[0];
+
+      console.log("found similar movie! " + title);
+      return title;
+    }
+  });
+
+}
+
+
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
