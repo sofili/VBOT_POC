@@ -189,7 +189,7 @@ const actions = {
       if (movieTitle) {
         // review of a movie
         console.log('before context:' + context);
-        getTomatoReview(movieTitle, cb)
+        getReview(movieTitle, cb)
         
       }
       else {
@@ -211,10 +211,6 @@ const actions = {
   },
   ['find-movie'](sessionId, context, cb) {
     context.title = getMovieInfo(context.movieTitle);
-    cb(context);
-  },
-  ['get-review'](sessionId, context, cb) {
-    context.review = getTomatoReview(context.movieTitle);
     cb(context);
   },
   ['similar-movie'](sessionId, context, cb) {
@@ -431,7 +427,52 @@ function getMovieInfo(text) {
 
 };
 
-function getTomatoReview(text, cb) {
+function getTomatoReview(contentId, cb) {
+  var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/isByTopAuthor/followup/totalCount';
+
+  request({
+    url: url_review,
+    method: 'GET'
+  }, function(error, response, body) {
+    if (error) {
+      console.log('*******Error sending message: ', error);
+    } else if (response.body) {
+      var sub = response.body.substring(10, response.body.length - 2);
+      var evaluation = eval('(' + sub + ')');
+      
+      console.log('result:' + response.body);
+
+      var randomNum = 0;
+      var totalCount = evaluation.totalCount[0];
+      var totalCountInt = parseInt(totalCount);
+
+      // if (totalCount) {
+      //   randomNum = getRandomInt(0,totalCount - 1);
+      // }
+
+      if (totalCountInt == 0) {
+        console.log('no reviews!');
+        response.comment = 'Sorry! No reviews!';
+        cb(response);
+      }
+      else {
+        console.log('with reviews!');
+        var response = {'author' : evaluation.tomatoReview[randomNum].author[0],
+        'comment' : evaluation.tomatoReview[randomNum].comment[0],
+        'source' : evaluation.tomatoReview[randomNum].source[0],
+        'reviewURL' : evaluation.tomatoReview[randomNum].url[0]
+
+         };
+        console.log("found review! " + response.comment + ' By:' + response.author + ' Source:' + response.source + ' reviewURL:' + response.reviewURL);
+        cb(response);
+
+      }     
+   }
+  });
+
+}
+
+function getReview(text, cb) {
 
   console.log('send search result for ' + text);
   // var search = text.substring(12, text.lenght);
@@ -439,7 +480,7 @@ function getTomatoReview(text, cb) {
   console.log('type of encoded search :', typeof encodedSearch);
   console.log('encoded search: ', encodedSearch);
 
-  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true';
+  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount';
   
   request({
     url: url_s,
@@ -450,69 +491,28 @@ function getTomatoReview(text, cb) {
     } else if (response.body) {
       var sub = response.body.substring(10, response.body.length - 2);
       var evaluation = eval('(' + sub + ')');
-
+      var totalCount = evaluation.totalCount[0];
       // console.log('result:' + response.body);
       // get first search result
 
-      try {
+      if (parseInt(totalCount) === 0) {
+        console.log('cannot find a matching movie');
+      }
+      else {
         var contentId = evaluation.content[0].contentId[0];
         var title = evaluation.content[0].title[0];
 
         // Need to handle if there's no review
 
         console.log("found it! " + title + "/id:" + contentId);
-
-        var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/isByTopAuthor/followup/totalCount';
-
-        request({
-          url: url_review,
-          method: 'GET'
-        }, function(error, response, body) {
-          if (error) {
-            console.log('*******Error sending message: ', error);
-          } else if (response.body) {
-            var sub = response.body.substring(10, response.body.length - 2);
-            var evaluation = eval('(' + sub + ')');
-            
-            console.log('result:' + response.body);
-
-            var randomNum = 0;
-            var totalCount = evaluation.totalCount[0];
-
-            // if (totalCount) {
-            //   randomNum = getRandomInt(0,totalCount - 1);
-            // }
-
-            try {
-	            var response = {'author' : evaluation.tomatoReview[randomNum].author[0],
-	            'comment' : evaluation.tomatoReview[randomNum].comment[0],
-	            'source' : evaluation.tomatoReview[randomNum].source[0],
-	            'reviewURL' : evaluation.tomatoReview[randomNum].url[0]
-
-	             };
-	            // var response['author'] = evaluation.tomatoReview[randomNum].author[0];
-
-
-	            console.log("found review! " + response.comment + ' By:' + response.author + ' Source:' + response.source + ' reviewURL:' + response.reviewURL);
-	            cb(response);
-
-	         }
-	         catch(err) {
-	         	response.comment = 'Sorry! There is no review for ' + title;
-        		cb(response);
-	         }
-          }
-        });
-      }
-      catch(err) {
-        response.comment = 'Sorry! Cannot find it on VUDU!';
-        cb(response);
-      }
-
+        getTomatoReview(contentId, cb);
+        
 
       }
-    });
+    }
+  });
 }
+
 
 function getSimilarMovie(contentId) {
   var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10';
