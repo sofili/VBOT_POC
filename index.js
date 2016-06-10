@@ -174,7 +174,7 @@ const actions = {
       }
       else {
         // recommendation
-        content.title = getTopMovie();
+        context.title = getTopMovie();
       }
     } 
     else if (intent == 'review') {
@@ -184,21 +184,19 @@ const actions = {
       }
       else {
         // recommendation
-        content.title = getTopMovie();
+        context.title = getTopMovie();
       }
 
 
     }
     else if (intent == 'recommendation') {
       // recommendation
-      content.title = getTopMovie();
+      context.title = getTopMovie();
     }
     else {
       // recommendation
-      content.title = getTopMovie();
+      context.title = getTopMovie();
     }
-
-    cb(context);
   },
   ['find-movie'](sessionId, context, cb) {
     context.title = getMovieInfo(context.movieTitle);
