@@ -303,15 +303,20 @@ app.post('/webhook', (req, res) => {
       // );
       sendGenericMessage(sender, '');
 
-      // wit.converse(
-      // 	sessionId,
-      // 	msg,
-      // 	sessions[sessionId].context,
-      // 	(error, context) => {
+      wit.converse(
+      	sessionId,
+      	msg,
+      	sessions[sessionId].context,
+      	(error, data) => {
+      		if (error) {
+      			console.log('Oops! Got an error from Wit:', error);
+      		}
+      		else {
+      			console.log('Yay! Got a WIT response:' + JSON.stringify(data))
+      		}
+      	}
 
-      // 	}
-
-      // );
+      );
     }
   }
   res.sendStatus(200);
