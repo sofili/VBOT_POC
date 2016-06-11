@@ -273,34 +273,35 @@ app.post('/webhook', (req, res) => {
 
       // Let's forward the message to the Wit.ai Bot Engine
       // This will run all actions until our bot has nothing left to do
-      wit.runActions(
-        sessionId, // the user's current session
-        msg, // the user's message 
-        sessions[sessionId].context, // the user's current session state
-        (error, context) => {
-          if (error) {
-            console.log('Oops! Got an error from Wit:', error);
-          } else {
-            // Our bot did everything it has to do.
-            // Now it's waiting for further messages to proceed.
-            console.log('Waiting for futher messages.');
+      // wit.runActions(
+      //   sessionId, // the user's current session
+      //   msg, // the user's message 
+      //   sessions[sessionId].context, // the user's current session state
+      //   (error, context) => {
+      //     if (error) {
+      //       console.log('Oops! Got an error from Wit:', error);
+      //     } else {
+      //       // Our bot did everything it has to do.
+      //       // Now it's waiting for further messages to proceed.
+      //       console.log('Waiting for futher messages.');
 
-            // Based on the session state, you might want to reset the session.
-            // This depends heavily on the business logic of your bot.
-            // Example:
-            // if (context['done']) {
-            //   delete sessions[sessionId];
-            // }
+      //       // Based on the session state, you might want to reset the session.
+      //       // This depends heavily on the business logic of your bot.
+      //       // Example:
+      //       // if (context['done']) {
+      //       //   delete sessions[sessionId];
+      //       // }
 
-            // Updating the user's current session state
+      //       // Updating the user's current session state
             
-            var testData = getTestFBResponse();
-            console.log('sending to fb:' + JSON.stringify(testData));
-            context['text'] = 'Sophia is awesome';
-            sessions[sessionId].context = context; // context
-          }
-        }
-      );
+      //       var testData = getTestFBResponse();
+      //       console.log('sending to fb:' + JSON.stringify(testData));
+      //       context['text'] = 'Sophia is awesome';
+      //       sessions[sessionId].context = context; // context
+      //     }
+      //   }
+      // );
+      sendGenericMessage(sender, '');
 
       // wit.converse(
       // 	sessionId,
@@ -315,6 +316,55 @@ app.post('/webhook', (req, res) => {
   }
   res.sendStatus(200);
 });
+
+function sendGenericMessage(sender, messageData) {
+  messageData = {
+    "attachment": {
+      "type": "template",
+      "payload": {
+        "template_type": "generic",
+        "elements": [{
+          "title": "First card",
+          "subtitle": "Element #1 of an hscroll",
+          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+          "buttons": [{
+            "type": "web_url",
+            "url": "https://www.messenger.com/",
+            "title": "Web url"
+          }, {
+            "type": "postback",
+            "title": "Postback",
+            "payload": "Payload for first element in a generic bubble",
+          }],
+        },{
+          "title": "Second card",
+          "subtitle": "Element #2 of an hscroll",
+          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
+          "buttons": [{
+            "type": "postback",
+            "title": "Postback",
+            "payload": "Payload for second element in a generic bubble",
+          }],
+        }]
+      }
+    }
+  };
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:token},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending message: ', error);
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error);
+    }
+  });
+};
 
 function getTestFBResponse() {
 	return {
