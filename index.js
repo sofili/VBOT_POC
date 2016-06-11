@@ -303,35 +303,33 @@ app.post('/webhook', (req, res) => {
 
       // Let's forward the message to the Wit.ai Bot Engine
       // This will run all actions until our bot has nothing left to do
-      // wit.runActions(
-      //   sessionId, // the user's current session
-      //   msg, // the user's message 
-      //   sessions[sessionId].context, // the user's current session state
-      //   (error, context) => {
-      //     if (error) {
-      //       console.log('Oops! Got an error from Wit:', error);
-      //     } else {
-      //       // Our bot did everything it has to do.
-      //       // Now it's waiting for further messages to proceed.
-      //       console.log('Waiting for futher messages.');
+      wit.runActions(
+        sessionId, // the user's current session
+        msg, // the user's message 
+        sessions[sessionId].context, // the user's current session state
+        (error, context) => {
+          if (error) {
+            console.log('Oops! Got an error from Wit:', error);
+          } else {
+            // Our bot did everything it has to do.
+            // Now it's waiting for further messages to proceed.
+            console.log('Waiting for futher messages.');
 
-      //       // Based on the session state, you might want to reset the session.
-      //       // This depends heavily on the business logic of your bot.
-      //       // Example:
-      //       // if (context['done']) {
-      //       //   delete sessions[sessionId];
-      //       // }
+            // Based on the session state, you might want to reset the session.
+            // This depends heavily on the business logic of your bot.
+            // Example:
+            // if (context['done']) {
+            //   delete sessions[sessionId];
+            // }
 
-      //       // Updating the user's current session state
+            // Updating the user's current session state
             
-      //       var testData = getTestFBResponse();
-      //       console.log('sending to fb:' + JSON.stringify(testData));
-      //       context['text'] = 'Sophia is awesome';
-      //       sessions[sessionId].context = context; // context
-      //     }
-      //   }
-      // );
-      sendGenericMessage(sender, '');
+            sessions[sessionId].context = context;
+          }
+        }
+      );
+      
+      // sendGenericMessage(sender, '');
 
       // wit.converse(
       // 	sessionId,
