@@ -49,7 +49,37 @@ const fbMessage = (recipientId, msg, cb) => {
         id: recipientId,
       },
       message: {
-        text: msg,
+        {
+    "attachment": {
+      "type": "template",
+      "payload": {
+        "template_type": "generic",
+        "elements": [{
+          "title": "First card",
+          "subtitle": "Element #1 of an hscroll",
+          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+          "buttons": [{
+            "type": "web_url",
+            "url": "https://www.messenger.com/",
+            "title": "Web url"
+          }, {
+            "type": "postback",
+            "title": "Postback",
+            "payload": "Payload for first element in a generic bubble",
+          }],
+        },{
+          "title": "Second card",
+          "subtitle": "Element #2 of an hscroll",
+          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
+          "buttons": [{
+            "type": "postback",
+            "title": "Postback",
+            "payload": "Payload for second element in a generic bubble",
+          }],
+        }]
+      }
+    }
+  }//text: msg,
       },
     },
   };
@@ -303,20 +333,19 @@ app.post('/webhook', (req, res) => {
       // );
       sendGenericMessage(sender, '');
 
-      wit.converse(
-      	sessionId,
-      	msg,
-      	sessions[sessionId].context,
-      	(error, data) => {
-      		if (error) {
-      			console.log('Oops! Got an error from Wit:', error);
-      		}
-      		else {
-      			console.log('Yay! Got a WIT response:' + JSON.stringify(data))
-      		}
-      	}
-
-      );
+      // wit.converse(
+      // 	sessionId,
+      // 	msg,
+      // 	sessions[sessionId].context,
+      // 	(error, data) => {
+      // 		if (error) {
+      // 			console.log('Oops! Got an error from Wit:', error);
+      // 		}
+      // 		else {
+      // 			console.log('Yay! Got a WIT response:' + JSON.stringify(data))
+      // 		}
+      // 	}
+      // );
     }
   }
   res.sendStatus(200);
