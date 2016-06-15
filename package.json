@@ -19,6 +19,7 @@
   "author": "Julien Odent <julien@wit.ai>",
   "dependencies": {
     "node-fetch": "^1.5.1",
-    "node-uuid": "^1.4.7"
+    "node-uuid": "^1.4.7",
+    "promise": "^7.1.1"
   }
 }

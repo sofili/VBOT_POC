@@ -3,6 +3,8 @@
 const Logger = require('./lib/logger.js').Logger;
 const logLevels = require('./lib/logger.js').logLevels;
 const Wit = require('./lib/wit.js').Wit;
+const Promise = require('promise');
+const rp = require('request-promise');
 
 const logger = new Logger(logLevels.DEBUG);
 // When not cloning the `node-wit` repo, replace the `require` like so:
@@ -68,6 +70,15 @@ const fbMessage = (recipientId, msg, cb) => {
 	          }],
 	        },{
 	          "title": "Second card",
+	          "subtitle": "Element #2 of an hscroll",
+	          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
+	          "buttons": [{
+	            "type": "postback",
+	            "title": "Postback",
+	            "payload": "Payload for second element in a generic bubble",
+	          }],
+	        },{
+	          "title": "Third card",
 	          "subtitle": "Element #2 of an hscroll",
 	          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
 	          "buttons": [{
@@ -187,7 +198,7 @@ const actions = {
   },
   // You should implement your custom actions here
   // See https://wit.ai/docs/quickstart
-   
+
   ['fetch-top-movies'](sessionId, context, cb) {
     // Here should go the api call, e.g.:
     // context.forecast = apiCall(context.loc)
@@ -210,13 +221,13 @@ const actions = {
         // recommendation
         context.title = getTopMovie();
       }
-    } 
+    }
     else if (intent == 'review') {
       if (movieTitle) {
         // review of a movie
         console.log('before context:' + context);
         getReview(movieTitle, cb)
-        
+
       }
       else {
         // recommendation
@@ -233,7 +244,7 @@ const actions = {
       // recommendation
       context.title = getTopMovie();
     }
-    
+
   },
   ['find-movie'](sessionId, context, cb) {
     context.title = getMovieInfo(context.movieTitle);
@@ -303,7 +314,7 @@ app.post('/webhook', (req, res) => {
       // This will run all actions until our bot has nothing left to do
       wit.runActions(
         sessionId, // the user's current session
-        msg, // the user's message 
+        msg, // the user's message
         sessions[sessionId].context, // the user's current session state
         (error, context) => {
           if (error) {
@@ -321,12 +332,12 @@ app.post('/webhook', (req, res) => {
             // }
 
             // Updating the user's current session state
-            
+
             sessions[sessionId].context = context;
           }
         }
       );
-      
+
       // sendGenericMessage(sender, '');
 
       // wit.converse(
@@ -476,7 +487,7 @@ function getTopMovie() {
     } else if (response.body) {
       var sub = response.body.substring(10, response.body.length - 2);
       var evaluation = eval('(' + sub + ')');
-      
+
       var randomNum = getRandomInt(1,30);
       var id = evaluation.content[randomNum].contentId[0];
       var title = evaluation.content[randomNum].title[0];
@@ -497,7 +508,7 @@ function getMovieInfo(text) {
   console.log('encoded search: ', encodedSearch);
 
   var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount';
-  
+
   request({
     url: url_s,
     method: 'GET'
@@ -531,7 +542,7 @@ function getMovieInfo(text) {
           } else if (response.body) {
             var sub = response.body.substring(10, response.body.length - 2);
             var evaluation = eval('(' + sub + ')');
-            
+
             var randomNum = getRandomInt(1,30);
             var id = evaluation.content[randomNum].contentId[0];
             var title = evaluation.content[randomNum].title[0];
@@ -566,7 +577,7 @@ function getTomatoReview(contentId, cb) {
     } else if (response.body) {
       var sub = response.body.substring(10, response.body.length - 2);
       var evaluation = eval('(' + sub + ')');
-      
+
       console.log('result:' + response.body);
 
       var randomNum = 0;
@@ -593,7 +604,7 @@ function getTomatoReview(contentId, cb) {
         console.log("found review! " + response.comment + ' By:' + response.author + ' Source:' + response.source + ' reviewURL:' + response.reviewURL);
         cb(response);
 
-      }     
+      }
    }
   });
 
@@ -607,39 +618,94 @@ function getReview(text, cb) {
   console.log('type of encoded search :', typeof encodedSearch);
   console.log('encoded search: ', encodedSearch);
 
-  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount';
-  
-  request({
-    url: url_s,
-    method: 'GET'
-  }, function(error, response, body) {
-    if (error) {
-      console.log('*******Error sending message: ', error);
-    } else if (response.body) {
-      var sub = response.body.substring(10, response.body.length - 2);
-      var evaluation = eval('(' + sub + ')');
-      var totalCount = evaluation.totalCount[0];
-      // console.log('result:' + response.body);
-      // get first search result
+  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount/count/3';
 
-      if (parseInt(totalCount) === 0) {
-        console.log('cannot find a matching movie');
-      }
-      else {
-        var contentId = evaluation.content[0].contentId[0];
-        var title = evaluation.content[0].title[0];
+  rp(url_s)
+  	.then(function (response) {
+  		if (response.body) {
+	      var sub = response.body.substring(10, response.body.length - 2);
+	      var evaluation = eval('(' + sub + ')');
+	      var totalCount = evaluation.totalCount[0];
+	      // console.log('result:' + response.body);
+	      // get first search result
 
-        // Need to handle if there's no review
+			if (parseInt(totalCount) === 0) {
+			console.log('cannot find a matching movie');
+			}
+			else {
+		      	var msg = [];
 
-        console.log("found it! " + title + "/id:" + contentId);
-        getTomatoReview(contentId, cb);
-        
+		      	for (i = 0; i < parseInt(totalCount); i++) {
+		      		var contentId = evaluation.content[i].contentId[0];
+		        	var title = evaluation.content[i].title[0];
+		        	var description = evaluation.context[i].description[0];
 
-      }
-    }
-  });
+		      		msg[i] = getFBElement(title, description, contentId, "Check it out!");
+
+		      	}
+		        // Need to handle if there's no review
+		        console.log(JSON.stringify(msg));
+		        console.log("found it! " + title + "/id:" + contentId);
+
+		        return contentId;
+		    }
+		}
+  	})
+  	.then(getTomatoReview(contentId, cb))
+  	.catch(function (err) {
+  		console.log('*******Error sending message: ', err);
+  	});
+
+  // request({
+  //   url: url_s,
+  //   method: 'GET'
+  // }, function(error, response, body) {
+  //   if (error) {
+  //     console.log('*******Error sending message: ', error);
+  //   } else if (response.body) {
+  //     var sub = response.body.substring(10, response.body.length - 2);
+  //     var evaluation = eval('(' + sub + ')');
+  //     var totalCount = evaluation.totalCount[0];
+  //     // console.log('result:' + response.body);
+  //     // get first search result
+
+  //     if (parseInt(totalCount) === 0) {
+  //       console.log('cannot find a matching movie');
+  //     }
+  //     else {
+  //     	var msg = [];
+
+  //     	for (i = 0; i < parseInt(totalCount); i++) {
+  //     		var contentId = evaluation.content[i].contentId[0];
+  //       	var title = evaluation.content[i].title[0];
+  //       	var description = evaluation.context[i].description[0];
+
+  //     		msg[i] = getFBElement(title, description, contentId, "Check it out!");
+
+  //     	}
+  //       // Need to handle if there's no review
+
+  //       console.log("found it! " + title + "/id:" + contentId);
+  //       getTomatoReview(contentId, cb);
+
+
+  //     }
+  //   }
+  // });
 }
 
+function getFBElement(title, subtitle, contentId, btn_title) {
+	return element = {
+	  "title": title,
+	  "subtitle": subtitle,
+	  "image_url": "http://images2.vudu.com/poster2/" + contentId + "-l",
+	  "buttons": [{
+	    "type": "http://www.vudu.com/movies/#!content/" + contentId,
+	    "url": btn_url,
+	    "title": btn_title
+	  }
+
+}
 
 function getSimilarMovie(contentId) {
   var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10';
@@ -653,7 +719,7 @@ function getSimilarMovie(contentId) {
     } else if (response.body) {
       var sub = response.body.substring(10, response.body.length - 2);
       var evaluation = eval('(' + sub + ')');
-      
+
       var randomNum = getRandomInt(1,10);
       var title = evaluation.content[randomNum].title[0];
       var contentId = evaluation.content[randomNum].contentId[0];
