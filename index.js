@@ -614,7 +614,7 @@ function getReview(text, cb) {
 			}
 			console.log("getReview - something went wrong");
 		})
-		.then(getTomatoReview(vContent)
+		.then(getTomatoReview(vContent))
 		.then(function(vContent) {
 			// prepare fb msg and execute callback
 			// console.log("finally! type of contenAry:", typeof contentAry);
