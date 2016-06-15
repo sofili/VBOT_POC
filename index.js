@@ -646,12 +646,13 @@ function getReview(text, cb) {
 		        	title = evaluation.content[0].title[0];
 		        	description = evaluation.context[0].description[0];
 
+		        	console.log("found it! " + title + "/id:" + contentId);
 		      		msg[i] = getFBElement(title, description, contentId, "Check it out!");
 
 		      	}
 		        // Need to handle if there's no review
 		        console.log(JSON.stringify(msg));
-		        console.log("found it! " + title + "/id:" + contentId);
+
 
 		        return contentId;
 		    }
