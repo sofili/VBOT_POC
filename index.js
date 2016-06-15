@@ -623,6 +623,7 @@ function getReview(text, cb) {
   rp(url_s)
   	.then(function (response) {
   		console.log('in GetReview - got response:' + response);
+  		console.log('response.body:' + response.body);
   		if (response.body) {
 	      var sub = response.body.substring(10, response.body.length - 2);
 	      var evaluation = eval('(' + sub + ')');
