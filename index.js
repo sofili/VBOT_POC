@@ -642,12 +642,12 @@ function getReview(text, cb) {
 
 		      	for (var i = 0; i < 3; i++) {
 		      		console.log("in loop:" + i);
-		      		contentId = evaluation.content[0].contentId[0];
-		        	title = evaluation.content[0].title[0];
-		        	description = evaluation.context[0].description[0];
+		      		contentId = evaluation.content[i].contentId[0];
+		        	title = evaluation.content[i].title[0];
+		        	// description = evaluation.context[0].description[0];
 
 		        	console.log("found it! " + title + "/id:" + contentId);
-		      		msg[i] = getFBElement(title, description, contentId, "Check it out!");
+		      		msg[i] = getFBElement(title, "test", contentId, "Check it out!");
 
 		      	}
 		        // Need to handle if there's no review
