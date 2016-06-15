@@ -50,7 +50,7 @@ const fbMessage = (recipientId, msg, cb) => {
       },
       message: {
 	    attachment: {
-	      type: template,
+	      type: "template",
 	      payload: {
 	        "template_type": "generic",
 	        "elements": [{
@@ -496,7 +496,7 @@ function getMovieInfo(text) {
   console.log('type of encoded search :', typeof encodedSearch);
   console.log('encoded search: ', encodedSearch);
 
-  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/titleMagic/' + encodedSearch +'/count/3/type/program/sortBy/tomatoMeter';
+  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount';
   
   request({
     url: url_s,
