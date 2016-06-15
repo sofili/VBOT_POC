@@ -620,50 +620,51 @@ function getReview(text, cb) {
 
   	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount/count/3';
 
+  	var contentArray = [];
+  	var vuduContent = {};
 
-  rp(url_s)
-  	.then(function (response) {
-  		console.log('in GetReview - got response:' + response);
-  		if (response) {
-	      var sub = response.substring(10, response.length - 2);
-	      var evaluation = eval('(' + sub + ')');
-	      var totalCount = evaluation.totalCount[0];
-	      console.log('totalCount:' + totalCount);
-	      // get first search result
+	rp(url_s)
+		.then(function (response) {
+			console.log('in GetReview - got response:' + response);
+			if (response) {
+				var sub = response.substring(10, response.length - 2);
+				var evaluation = eval('(' + sub + ')');
+				var totalCount = evaluation.totalCount[0];
+				console.log('totalCount:' + totalCount);
+				// get first search result
 
-			if (parseInt(totalCount) === 0) {
-			console.log('cannot find a matching movie');
+				if (parseInt(totalCount) === 0) {
+				console.log('cannot find a matching movie');
+				}
+				else {
+				  	var msg = [];
+				  	var contentId;
+				  	var title;
+				  	var description;
+
+				  	for (var i = 0; i < 3; i++) {
+				  		console.log("in loop:" + i);
+				  		vuduContent.contentId = evaluation.content[i].contentId[0];
+				    	vuduContent.title = evaluation.content[i].title[0];
+				    	// description = evaluation.context[0].description[0];
+				    	contentArray[i] = vuduContent;
+				    	console.log("found it! " + title + "/id:" + contentId);
+				  		msg[i] = getFBElement(title, "test", contentId, "Check it out!");
+
+				  	}
+				    // Need to handle if there's no review
+				    console.log(JSON.stringify(msg));
+				    return vuduContent;
+				}
 			}
-			else {
-		      	var msg = [];
-		      	var contentId;
-		      	var title;
-		      	var description;
-
-		      	for (var i = 0; i < 3; i++) {
-		      		console.log("in loop:" + i);
-		      		contentId = evaluation.content[i].contentId[0];
-		        	title = evaluation.content[i].title[0];
-		        	// description = evaluation.context[0].description[0];
-
-		        	console.log("found it! " + title + "/id:" + contentId);
-		      		msg[i] = getFBElement(title, "test", contentId, "Check it out!");
-
-		      	}
-		        // Need to handle if there's no review
-		        console.log(JSON.stringify(msg));
-
-
-		        return contentId;
-		    }
-		}
-		console.log("getReview - something went wrong");
-		return "";
-  	})
-  	.then(getTomatoReview(contentId, cb))
-  	.catch(function (err) {
-  		console.log('*******Error sending message: ', err);
-  	});
+			console.log("getReview - something went wrong");
+		})
+		.then(function(vContent) {
+			console.log("next then:" + JSON.stringify(vContent));
+		})
+		.catch(function (err) {
+			console.log('*******Error sending message: ', err);
+		});
 
   // request({
   //   url: url_s,
