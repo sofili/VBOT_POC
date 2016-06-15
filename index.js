@@ -636,6 +636,8 @@ function getReview(text, cb) {
 			for (var i = 0; i < contentAry.length; i++) {
 				var vContent = contentAry[i];
 				msg[i] = getFBElement(vContent);
+				console.log("finally! " + JSON.stringify(msg[i]));
+
 			}
 			cb(msg);
 
