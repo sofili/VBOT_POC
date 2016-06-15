@@ -703,8 +703,7 @@ function getFBElement(title, subtitle, contentId, btn_title) {
 	    "type": "http://www.vudu.com/movies/#!content/" + contentId,
 	    "url": btn_url,
 	    "title": btn_title
-	  }
-
+	};
 }
 
 function getSimilarMovie(contentId) {
