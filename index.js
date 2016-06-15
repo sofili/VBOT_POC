@@ -618,14 +618,14 @@ function getReview(text, cb) {
   console.log('type of encoded search :', typeof encodedSearch);
   console.log('encoded search: ', encodedSearch);
 
-  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount/count/3';
+  	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount/count/3';
+
 
   rp(url_s)
   	.then(function (response) {
   		console.log('in GetReview - got response:' + response);
-  		console.log('response.body:' + response.body);
-  		if (response.body) {
-	      var sub = response.body.substring(10, response.body.length - 2);
+  		if (response) {
+	      var sub = response.substring(10, response.length - 2);
 	      var evaluation = eval('(' + sub + ')');
 	      var totalCount = evaluation.totalCount[0];
 	      // console.log('result:' + response.body);
