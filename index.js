@@ -44,7 +44,7 @@ const fbReq = request.defaults({
   headers: {'Content-Type': 'application/json'},
 });
 
-const fbMessage = (recipientId, msg, cb) => {
+const fbMessage = (recipientId, elementsArray, cb) => {
   const opts = {
     form: {
       recipient: {
@@ -55,38 +55,7 @@ const fbMessage = (recipientId, msg, cb) => {
 	      type: "template",
 	      payload: {
 	        "template_type": "generic",
-	        "elements": [{
-	          "title": "First card",
-	          "subtitle": "Element #1 of an hscroll",
-	          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
-	          "buttons": [{
-	            "type": "web_url",
-	            "url": "https://www.messenger.com/",
-	            "title": "Web url"
-	          }, {
-	            "type": "postback",
-	            "title": "Postback",
-	            "payload": "Payload for first element in a generic bubble",
-	          }],
-	        },{
-	          "title": "Second card",
-	          "subtitle": "Element #2 of an hscroll",
-	          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-	          "buttons": [{
-	            "type": "postback",
-	            "title": "Postback",
-	            "payload": "Payload for second element in a generic bubble",
-	          }],
-	        },{
-	          "title": "Third card",
-	          "subtitle": "Element #2 of an hscroll",
-	          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-	          "buttons": [{
-	            "type": "postback",
-	            "title": "Postback",
-	            "payload": "Payload for second element in a generic bubble",
-	          }],
-	        }]
+	        "elements": elementsArray
 	      }
 	    }
       },
@@ -565,49 +534,39 @@ function getMovieInfo(text) {
 
 };
 
-function getTomatoReview(contentId, cb) {
-  var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/isByTopAuthor/followup/totalCount';
+function getTomatoReview(vuduContent) {
 
-  request({
-    url: url_review,
-    method: 'GET'
-  }, function(error, response, body) {
-    if (error) {
-      console.log('*******Error sending message: ', error);
-    } else if (response.body) {
-      var sub = response.body.substring(10, response.body.length - 2);
-      var evaluation = eval('(' + sub + ')');
+	var contentId = vuduContent.contentId;
+	var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/isByTopAuthor/followup/totalCount';
 
-      console.log('result:' + response.body);
+	rp(url_review)
+		.then(function (response) {
+			console.log('in getTomatoReview - got response:' + response);
+			if (response) {
+				var sub = response.substring(10, response.length - 2);
+				var evaluation = eval('(' + sub + ')');
+				var totalCount = evaluation.totalCount[0];
+				console.log('totalCount:' + totalCount);
+				// get first search result
 
-      var randomNum = 0;
-      var totalCount = evaluation.totalCount[0];
-      var totalCountInt = parseInt(totalCount);
+				if (parseInt(totalCount) === 0) {
+				console.log('cannot find a review for contentId:' + contentId);
+				}
+				else {
 
-      // if (totalCount) {
-      //   randomNum = getRandomInt(0,totalCount - 1);
-      // }
+				  	vuduContent.reviewComment = evaluation.tomatoReview[randomNum].comment[0];
+				  	vuduContent.reviewAuthor = evaluation.tomatoReview[randomNum].author[0];
+				  	vuduContent.reviewSource = evaluation.tomatoReview[randomNum].source[0];
+				  	vuduContent.reviewURL = evaluation.tomatoReview[randomNum].url[0];
 
-      if (totalCountInt == 0) {
-        console.log('no reviews!');
-        response.comment = 'Sorry! No reviews!';
-        cb(response);
-      }
-      else {
-        console.log('with reviews!');
-        var response = {'author' : evaluation.tomatoReview[randomNum].author[0],
-        'comment' : evaluation.tomatoReview[randomNum].comment[0],
-        'source' : evaluation.tomatoReview[randomNum].source[0],
-        'reviewURL' : evaluation.tomatoReview[randomNum].url[0]
-
-         };
-        console.log("found review! " + response.comment + ' By:' + response.author + ' Source:' + response.source + ' reviewURL:' + response.reviewURL);
-        cb(response);
-
-      }
-   }
-  });
-
+				    return vuduContent;
+				}
+			}
+			console.log("getTomatoReview - something went wrong");
+		})
+		.catch(function (err) {
+			console.log('*******Error sending message: ', err);
+	});
 }
 
 function getReview(text, cb) {
@@ -654,13 +613,32 @@ function getReview(text, cb) {
 				  	}
 				    // Need to handle if there's no review
 				    // console.log(JSON.stringify(msg));
-				    return vuduContent;
+				    return contentArray;
 				}
 			}
 			console.log("getReview - something went wrong");
 		})
-		.then(function(vContent) {
-			console.log("next then:" + JSON.stringify(vContent));
+		.then(function(contentAry) {
+			// Fill in reviews for each content
+			for (var i = contentAry.length - 1; i >= 0; i--) {
+				var vContent = contentAry[i];
+				if (vContent.contentId) {
+					vContent = getTomatoReview(vContent);
+				}
+				contentAry[i] = vContent;
+			}
+			console.log("next then:" + JSON.stringify(var vContent = vContent));
+			return contentAry;
+		})
+		.finally(function(contentAry) {
+			// prepare fb msg and execute callback
+			var msg = [];
+			for (var i = 0; i < contentAry.length; i++) {
+				var vContent = contentAry[i];
+				msg[i] = getFBElement(vContent);
+			}
+			cb(msg);
+
 		})
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
@@ -704,15 +682,15 @@ function getReview(text, cb) {
   // });
 }
 
-function getFBElement(title, subtitle, contentId, btn_title) {
+function getFBElement(vuduContent) {
 	var element = {
-	  "title": title,
-	  "subtitle": subtitle,
-	  "image_url": "http://images2.vudu.com/poster2/" + contentId + "-l",
+	  "title": vuduContent.title,
+	  "subtitle": "TEST",
+	  "image_url": "http://images2.vudu.com/poster2/" + vuduContent.contentId + "-l",
 	  "buttons": [{
-	    "type": "http://www.vudu.com/movies/#!content/" + contentId,
-	    "url": btn_url,
-	    "title": btn_title
+	    "type": "web_url",
+	    "url": "http://www.vudu.com/movies/#!content/" + vuduContent.contentId,
+	    "title": "check it out"
 		}]
 	};
 
