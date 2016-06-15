@@ -617,9 +617,9 @@ function getReview(text, cb) {
 		.then(getTomatoReview(vContent)
 		.then(function(vContent) {
 			// prepare fb msg and execute callback
-			console.log("finally! type of contenAry:", typeof contentAry);
+			// console.log("finally! type of contenAry:", typeof contentAry);
 			var msg = [];
-			for (var i = 0; i < contentAry.length; i++) {
+			for (var i = 0; i < 1; i++) {
 				var vContent = contentAry[i];
 				msg[i] = getFBElement(vContent);
 				console.log("finally! " + JSON.stringify(msg[i]));
