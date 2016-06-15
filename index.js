@@ -622,14 +622,14 @@ function getReview(text, cb) {
 					vContent = getTomatoReview(vContent);
 				}
 				contentAry[i] = vContent;
-				console.log("finally! " + JSON.stringify(vContent));
+				console.log("next then! " + JSON.stringify(vContent));
 			}
 			console.log("next then:" + contentAry);
 			return contentAry;
 		})
 		.then(function(contentAry) {
 			// prepare fb msg and execute callback
-			console.log("finally! type of contenAry:" + typeof contentAry);
+			console.log("finally! type of contenAry:", typeof contentAry);
 			var msg = [];
 			for (var i = 0; i < contentAry.length; i++) {
 				var vContent = contentAry[i];
