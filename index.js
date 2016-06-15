@@ -649,11 +649,11 @@ function getReview(text, cb) {
 				    	// description = evaluation.context[0].description[0];
 				    	contentArray[i] = vuduContent;
 				    	console.log("found it! " + title + "/id:" + contentId);
-				  		msg[i] = getFBElement(title, "test", contentId, "Check it out!");
+				  		// msg[i] = getFBElement(title, "test", contentId, "Check it out!");
 
 				  	}
 				    // Need to handle if there's no review
-				    console.log(JSON.stringify(msg));
+				    // console.log(JSON.stringify(msg));
 				    return vuduContent;
 				}
 			}
