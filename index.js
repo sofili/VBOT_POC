@@ -554,10 +554,10 @@ function getTomatoReview(vuduContent) {
 				}
 				else {
 
-				  	vuduContent.reviewComment = evaluation.tomatoReview[randomNum].comment[0];
-				  	vuduContent.reviewAuthor = evaluation.tomatoReview[randomNum].author[0];
-				  	vuduContent.reviewSource = evaluation.tomatoReview[randomNum].source[0];
-				  	vuduContent.reviewURL = evaluation.tomatoReview[randomNum].url[0];
+				  	vuduContent.reviewComment = evaluation.tomatoReview[0].comment[0];
+				  	vuduContent.reviewAuthor = evaluation.tomatoReview[0].author[0];
+				  	vuduContent.reviewSource = evaluation.tomatoReview[0].source[0];
+				  	vuduContent.reviewURL = evaluation.tomatoReview[0].url[0];
 
 				    return vuduContent;
 				}
