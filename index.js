@@ -628,7 +628,7 @@ function getReview(text, cb) {
 	      var sub = response.substring(10, response.length - 2);
 	      var evaluation = eval('(' + sub + ')');
 	      var totalCount = evaluation.totalCount[0];
-	      // console.log('result:' + response.body);
+	      console.log('totalCount:' + totalCount);
 	      // get first search result
 
 			if (parseInt(totalCount) === 0) {
@@ -641,6 +641,7 @@ function getReview(text, cb) {
 		      	var description;
 
 		      	for (var i = 0; i < parseInt(totalCount); i++) {
+		      		console.log("in loop:" + i);
 		      		contentId = evaluation.content[i].contentId[0];
 		        	title = evaluation.content[i].title[0];
 		        	description = evaluation.context[i].description[0];
