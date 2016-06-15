@@ -559,7 +559,7 @@ function getTomatoReview(vuduContent) {
 				  	vuduContent.reviewSource = evaluation.tomatoReview[0].source[0];
 				  	vuduContent.reviewURL = evaluation.tomatoReview[0].url[0];
 
-				    return Promise(vuduContent);
+				    return vuduContent;
 				}
 			}
 			console.log("getTomatoReview - something went wrong");
@@ -597,7 +597,7 @@ function getReview(text, cb) {
 				}
 				else {
 
-				  	for (var i = 0; i < 3; i++) {
+				  	for (var i = 0; i < 1; i++) {
 				  		console.log("in loop:" + i);
 				  		vuduContent.contentId = evaluation.content[i].contentId[0];
 				    	vuduContent.title = evaluation.content[i].title[0];
@@ -609,26 +609,13 @@ function getReview(text, cb) {
 				  	}
 				    // Need to handle if there's no review
 				    // console.log(JSON.stringify(msg));
-				    return contentArray;
+				    return vuduContent;
 				}
 			}
 			console.log("getReview - something went wrong");
 		})
-		.then(function(contentAry) {
-			// Fill in reviews for each content
-			for (var i = 0; i < contentAry.length; i++) {
-				var vContent = contentAry[i];
-				if (vContent.contentId) {
-					vContent = getTomatoReview(vContent);
-				}
-				contentAry[i] = vContent;
-				console.log("next then! " + JSON.stringify(vContent));
-			}
-			console.log("next then:" + contentAry);
-			return contentAry;
-		})
-		.all(contentAry)
-		.then(function(contentAry) {
+		.then(getTomatoReview(vContent)
+		.then(function(vContent) {
 			// prepare fb msg and execute callback
 			console.log("finally! type of contenAry:", typeof contentAry);
 			var msg = [];
