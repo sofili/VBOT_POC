@@ -627,7 +627,7 @@ function getReview(text, cb) {
 			console.log("next then:" + contentAry);
 			return contentAry;
 		})
-		.finally(function(contentAry) {
+		.then(function(contentAry) {
 			// prepare fb msg and execute callback
 			console.log("finally! type of contenAry:" + typeof contentAry);
 			var msg = [];
