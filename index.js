@@ -596,10 +596,6 @@ function getReview(text, cb) {
 				console.log('cannot find a matching movie');
 				}
 				else {
-				  	var msg = [];
-				  	var contentId;
-				  	var title;
-				  	var description;
 
 				  	for (var i = 0; i < 3; i++) {
 				  		console.log("in loop:" + i);
@@ -607,7 +603,7 @@ function getReview(text, cb) {
 				    	vuduContent.title = evaluation.content[i].title[0];
 				    	// description = evaluation.context[0].description[0];
 				    	contentArray[i] = vuduContent;
-				    	console.log("found it! " + title + "/id:" + contentId);
+				    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
 				  		// msg[i] = getFBElement(title, "test", contentId, "Check it out!");
 
 				  	}
@@ -620,18 +616,20 @@ function getReview(text, cb) {
 		})
 		.then(function(contentAry) {
 			// Fill in reviews for each content
-			for (var i = contentAry.length - 1; i >= 0; i--) {
+			for (var i = 0; i < contentAry.length; i++) {
 				var vContent = contentAry[i];
 				if (vContent.contentId) {
 					vContent = getTomatoReview(vContent);
 				}
 				contentAry[i] = vContent;
+				console.log("finally! " + JSON.stringify(vContent));
 			}
 			console.log("next then:" + contentAry);
 			return contentAry;
 		})
 		.finally(function(contentAry) {
 			// prepare fb msg and execute callback
+			console.log("finally! type of contenAry:" + typeof contentAry);
 			var msg = [];
 			for (var i = 0; i < contentAry.length; i++) {
 				var vContent = contentAry[i];
