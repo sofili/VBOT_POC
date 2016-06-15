@@ -695,7 +695,7 @@ function getReview(text, cb) {
 }
 
 function getFBElement(title, subtitle, contentId, btn_title) {
-	return element = {
+	var element = {
 	  "title": title,
 	  "subtitle": subtitle,
 	  "image_url": "http://images2.vudu.com/poster2/" + contentId + "-l",
@@ -703,7 +703,10 @@ function getFBElement(title, subtitle, contentId, btn_title) {
 	    "type": "http://www.vudu.com/movies/#!content/" + contentId,
 	    "url": btn_url,
 	    "title": btn_title
+		}]
 	};
+
+	return element;
 }
 
 function getSimilarMovie(contentId) {
