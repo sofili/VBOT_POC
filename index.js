@@ -627,7 +627,7 @@ function getReview(text, cb) {
 				}
 				contentAry[i] = vContent;
 			}
-			console.log("next then:" + JSON.stringify(var vContent = vContent));
+			console.log("next then:" + contentAry);
 			return contentAry;
 		})
 		.finally(function(contentAry) {
