@@ -559,7 +559,7 @@ function getTomatoReview(vuduContent) {
 				  	vuduContent.reviewSource = evaluation.tomatoReview[0].source[0];
 				  	vuduContent.reviewURL = evaluation.tomatoReview[0].url[0];
 
-				    return vuduContent;
+				    return Promise(vuduContent);
 				}
 			}
 			console.log("getTomatoReview - something went wrong");
@@ -627,6 +627,7 @@ function getReview(text, cb) {
 			console.log("next then:" + contentAry);
 			return contentAry;
 		})
+		.all(contentAry)
 		.then(function(contentAry) {
 			// prepare fb msg and execute callback
 			console.log("finally! type of contenAry:", typeof contentAry);
