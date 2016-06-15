@@ -655,6 +655,8 @@ function getReview(text, cb) {
 		        return contentId;
 		    }
 		}
+		console.log("getReview - something went wrong");
+		return "";
   	})
   	.then(getTomatoReview(contentId, cb))
   	.catch(function (err) {
