@@ -640,7 +640,7 @@ function getReview(text, cb) {
 		      	var title;
 		      	var description;
 
-		      	for (i = 0; i < parseInt(totalCount); i++) {
+		      	for (var i = 0; i < parseInt(totalCount); i++) {
 		      		contentId = evaluation.content[i].contentId[0];
 		        	title = evaluation.content[i].title[0];
 		        	description = evaluation.context[i].description[0];
