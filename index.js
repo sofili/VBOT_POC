@@ -640,11 +640,11 @@ function getReview(text, cb) {
 		      	var title;
 		      	var description;
 
-		      	for (var i = 0; i < parseInt(totalCount); i++) {
+		      	for (var i = 0; i < 3; i++) {
 		      		console.log("in loop:" + i);
-		      		contentId = evaluation.content[i].contentId[0];
-		        	title = evaluation.content[i].title[0];
-		        	description = evaluation.context[i].description[0];
+		      		contentId = evaluation.content[0].contentId[0];
+		        	title = evaluation.content[0].title[0];
+		        	description = evaluation.context[0].description[0];
 
 		      		msg[i] = getFBElement(title, description, contentId, "Check it out!");
 
