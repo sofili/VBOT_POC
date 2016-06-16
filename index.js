@@ -463,8 +463,7 @@ function getTopMovie(cb) {
   	var contentArray = [];
   	var vuduContent = {};
 
-  	console.log("in getTopMovie");
-
+  	// console.log("in getTopMovie");
 	rp(url_s)
 		.then(function (response) {
 			// console.log('in getTopMovie - got response:' + response);
@@ -479,7 +478,6 @@ function getTopMovie(cb) {
 					console.log('something is wrong with getTopMovie totalCount');
 				}
 				else {
-					console.log("in else");
 					// Get random 3 top movies
 					var randomIndex =[];
 					for (var i = 0; i < 3; i++) {
@@ -493,9 +491,13 @@ function getTopMovie(cb) {
 				  		console.log("get top movie:" + randomNum);
 
 				  		vuduContent.contentId = evaluation.content[randomNum].contentId[0];
+				  		console.log(vuduContent.contentId)
 				    	vuduContent.title = evaluation.content[randomNum].title[0];
+				    	console.log(vuduContent.title)
 				    	vuduContent.description = evaluation.context[randomNum].description[0];
+				    	console.log(vuduContent.description)
 				    	vuduContent.tomatoMeter = evaluation.context[randomNum].tomatoMeter[0];
+				    	console.log(vuduContent.tomatoMeter)
 				    	contentArray[i] = vuduContent;
 				    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
 				  		// msg[i] = getFBElement(title, "test", contentId, "Check it out!");
