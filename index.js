@@ -679,26 +679,14 @@ function getReview(text, cb) {
 // This should return an array
 function getFBElement(contents) {
 	var msgArray = contents["Action"];
-	console.log("msgArray:", msgArray);
-	console.log("array length:", msgArray.length);
 	var outputArray = [];
-
-	// var sub = response.body.substring(10, response.body.length - 2);
-	// var evaluation = eval('(' + sub + ')');
-
-	// var randomNum = getRandomInt(1,10);
-	// var title = evaluation.content[randomNum].title[0];
 
 	for (var i = 0; i < msgArray.length; i++) {
 		var vuduContent = msgArray[i];
-		console.log("vuduContent:", JSON.stringify(vuduContent));
 
 		var title = vuduContent.title;
-		console.log("title:", title);
 		var description = vuduContent.description;
-		console.log("description:", description);
 		var contentId = vuduContent.contentId;
-		console.log("contentId:", contentId);
 
 		var element = {
 		  "title": title,
@@ -712,10 +700,7 @@ function getFBElement(contents) {
 		};
 
 		outputArray[i] = element;
-		console.log("element:", JSON.stringify(element));
 	}
-	console.log("print out output array");
-	console.log("outputArray:", outputArray);
 	return outputArray;
 }
 
