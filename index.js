@@ -690,7 +690,7 @@ function getFBElement(contents) {
 	// var title = evaluation.content[randomNum].title[0];
 
 	for (var i = 0; i < msgArray.length; i++) {
-		var vuduContent = outputArray[i];
+		var vuduContent = msgArray[i];
 		console.log("vuduContent:", JSON.stringify(vuduContent));
 
 		var title = vuduContent.title;
