@@ -477,6 +477,7 @@ function getTopMovie(cb) {
 					console.log('something is wrong with getTopMovie totalCount');
 				}
 				else {
+					console.log("in else");
 					// Get random 3 top movies
 					var randomIndex =[];
 					for (var i = 0; i < 3; i++) {
