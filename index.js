@@ -500,7 +500,7 @@ function getTopMovie(cb) {
 				  	}
 				    // Need to handle if there's no review
 				    // console.log(JSON.stringify(msg));
-				    cb({"test": [2, 4, 5]});
+				    cb({"title": "testTitle"});
 				}
 			}
 		})
