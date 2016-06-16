@@ -648,7 +648,6 @@ function getReview(text, cb) {
 
 				    	contentArray[i] = vuduContent;
 				    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
-				  		// msg[i] = getFBElement(title, "test", contentId, "Check it out!");
 
 				  	}
 				    // Need to handle if there's no review
@@ -680,11 +679,12 @@ function getReview(text, cb) {
 // This should return an array
 function getFBElement(contents) {
 	var msgArray = contents["Action"];
-
+	console.log(msgArray);
 	var outputArray = [];
 
 	for (var i = 0; i < msgArray.length; i++) {
 		var vuduContent = outputArray[i];
+		console.log(JSON.stringify(vuduContent));
 
 		var element = {
 		  "title": vuduContent.title,
@@ -699,6 +699,8 @@ function getFBElement(contents) {
 
 		outputArray[i] = element;
 	}
+	console.log("print out output array");
+	console.log(outputArray);
 	return outputArray;
 }
 
