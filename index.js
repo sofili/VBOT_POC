@@ -44,7 +44,7 @@ const fbReq = request.defaults({
   headers: {'Content-Type': 'application/json'},
 });
 
-const fbMessage = (recipientId, elementsArray, cb) => {
+const fbMessage = (recipientId, elementsDict, cb) => {
   const opts = {
     form: {
       recipient: {
@@ -55,7 +55,8 @@ const fbMessage = (recipientId, elementsArray, cb) => {
 	      type: "template",
 	      payload: {
 	        "template_type": "generic",
-	        "elements": elementsArray
+	        elementsDict
+	        // "elements": elementsArray
 	      }
 	    }
       },
@@ -461,7 +462,7 @@ function getTopMovie(cb) {
  	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/count/30/dimensionality/any/offset/0/sortBy/-watchedScore/superType/movies/type/program/type/bundle/followup/totalCount';
 
   	var contentArray = [];
-  	var vuduContent = {};
+
 
   	// console.log("in getTopMovie");
 	rp(url_s)
@@ -486,22 +487,23 @@ function getTopMovie(cb) {
 					}
 
 				  	for (var i = 0; i < 3; i++) {
-				  		console.log("in loop:" + i);
 				  		var randomNum = randomIndex[i];
 				  		console.log("get top movie:" + randomNum);
 
+				  		var vuduContent = {};
 				  		vuduContent.contentId = evaluation.content[randomNum].contentId[0];
 				    	vuduContent.title = evaluation.content[randomNum].title[0];
 				    	vuduContent.description = evaluation.content[randomNum].description[0];
 				    	vuduContent.tomatoMeter = evaluation.content[randomNum].tomatoMeter[0];
 
 				    	contentArray[i] = vuduContent;
+
 				    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
 
 				  	}
 				    // Need to handle if there's no review
 				    // console.log(JSON.stringify(msg));
-				    cb(contentArray);
+				    cb({"contentArray": contentArray});
 				}
 			}
 		})
