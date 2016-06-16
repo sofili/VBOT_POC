@@ -680,7 +680,14 @@ function getReview(text, cb) {
 function getFBElement(contents) {
 	var msgArray = contents["Action"];
 	console.log("msgArray:", msgArray);
+	console.log("array length:", msgArray.length);
 	var outputArray = [];
+
+	// var sub = response.body.substring(10, response.body.length - 2);
+	// var evaluation = eval('(' + sub + ')');
+
+	// var randomNum = getRandomInt(1,10);
+	// var title = evaluation.content[randomNum].title[0];
 
 	for (var i = 0; i < msgArray.length; i++) {
 		var vuduContent = outputArray[i];
