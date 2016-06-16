@@ -133,7 +133,11 @@ const actions = {
       console.log("Say message:" + JSON.stringify(message));
       console.log("Say context:" + JSON.stringify(context));
 
-      fbMessage(recipientId, message, (err, data) => {
+      var msg = getFBElement(context);
+
+      console.log("fb msg:" + JSON.stringify(msg));
+
+      fbMessage(recipientId, msg, (err, data) => {
         if (err) {
           console.log(
             'Oops! An error occurred while forwarding the response to',
@@ -566,7 +570,9 @@ function getTomatoReview(vuduContent) {
 				    return vuduContent;
 				}
 			}
-			console.log("getTomatoReview - something went wrong");
+			else {
+				console.log("getTomatoReview - something went wrong");
+			}
 		})
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
