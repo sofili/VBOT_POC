@@ -130,11 +130,9 @@ const actions = {
     if (recipientId) {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
-      console.log("Say message:" + JSON.stringify(message));
+
       console.log("Say context:" + JSON.stringify(context));
-
       var msg = getFBElement(context);
-
       console.log("fb msg:" + JSON.stringify(msg));
 
       fbMessage(recipientId, msg, (err, data) => {
@@ -207,18 +205,26 @@ const actions = {
       }
       else {
         // recommendation
-        context.title = getTopMovie();
+        context.title = getTopMovie(cb);
       }
 
 
     }
     else if (intent == 'recommendation') {
       // recommendation
-      context.title = getTopMovie();
+      context.title = getTopMovie(cb);
     }
     else {
       // recommendation
-      context.title = getTopMovie();
+      if (movieTitle) {
+      	// Can't find intent but user typed something for a movie
+      	getReview(movieTitle, cb)
+      }
+      else {
+      	// No intent no movie title, just response with top movies
+      	context.title = getTopMovie(cb);
+      }
+
     }
 
   },
@@ -313,109 +319,109 @@ app.post('/webhook', (req, res) => {
           }
         }
       );
-
-      // sendGenericMessage(sender, '');
-
-      // wit.converse(
-      // 	sessionId,
-      // 	msg,
-      // 	sessions[sessionId].context,
-      // 	(error, data) => {
-      // 		if (error) {
-      // 			console.log('Oops! Got an error from Wit:', error);
-      // 		}
-      // 		else {
-      // 			console.log('Yay! Got a WIT response:' + JSON.stringify(data))
-      // 		}
-      // 	}
-      // );
     }
   }
   res.sendStatus(200);
 });
 
-function sendGenericMessage(sender, messageData) {
-  messageData = {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": [{
-          "title": "First card",
-          "subtitle": "Element #1 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
-          "buttons": [{
-            "type": "web_url",
-            "url": "https://www.messenger.com/",
-            "title": "Web url"
+/*
+ * Postback Event
+ *
+ * This event is called when a postback is tapped on a Structured Message. Read
+ * more at https://developers.facebook.com/docs/messenger-platform/webhook-reference#postback
+ *
+ */
+function receivedPostback(event) {
+  var senderID = event.sender.id;
+  var recipientID = event.recipient.id;
+  var timeOfPostback = event.timestamp;
+
+  // The 'payload' param is a developer-defined field which is set in a postback
+  // button for Structured Messages.
+  var payload = event.postback.payload;
+
+  console.log("Received postback for user %d and page %d with payload '%s' " +
+    "at %d", senderID, recipientID, payload, timeOfPostback);
+
+  // When a postback is called, we'll send a message back to the sender to
+  // let them know it was successful
+  sendTextMessage(senderID, "Postback called");
+}
+
+/*
+ * Send a text message using the Send API.
+ *
+ */
+function sendTextMessage(recipientId, messageText) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      text: messageText
+    }
+  };
+
+  callSendAPI(messageData);
+}
+
+/*
+ * Send a button message using the Send API.
+ *
+ */
+function sendButtonMessage(recipientId) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "button",
+          text: "This is test text",
+          buttons:[{
+            type: "web_url",
+            url: "https://www.oculus.com/en-us/rift/",
+            title: "Open Web URL"
           }, {
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for first element in a generic bubble",
-          }],
-        },{
-          "title": "Second card",
-          "subtitle": "Element #2 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-          "buttons": [{
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for second element in a generic bubble",
-          }],
-        }]
+            type: "postback",
+            title: "Call Postback",
+            payload: "Developer defined postback"
+          }]
+        }
       }
     }
   };
+
+  callSendAPI(messageData);
+}
+
+/*
+ * Call the Send API. The message data goes in the body. If successful, we'll
+ * get the message id in a response
+ *
+ */
+function callSendAPI(messageData) {
   request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:FB_PAGE_TOKEN},
+    uri: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: { access_token: PAGE_ACCESS_TOKEN },
     method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
+    json: messageData
+
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var recipientId = body.recipient_id;
+      var messageId = body.message_id;
+
+      console.log("Successfully sent generic message with id %s to recipient %s",
+        messageId, recipientId);
+    } else {
+      console.error("Unable to send message.");
+      console.error(response);
+      console.error(error);
     }
   });
-};
-
-function getTestFBResponse() {
-	return {
-    "attachment": {
-      "type": "template",
-      "payload": {
-        "template_type": "generic",
-        "elements": [{
-          "title": "First card",
-          "subtitle": "Element #1 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
-          "buttons": [{
-            "type": "web_url",
-            "url": "https://www.messenger.com/",
-            "title": "Web url"
-          }, {
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for first element in a generic bubble",
-          }],
-        },{
-          "title": "Second card",
-          "subtitle": "Element #2 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-          "buttons": [{
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for second element in a generic bubble",
-          }],
-        }]
-      }
-    }
-  };
-
 }
 
 function sendSearchResult(text) {
@@ -450,9 +456,56 @@ function sendSearchResult(text) {
 };
 
 
-function getTopMovie() {
+function getTopMovie(cb) {
 
-  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/count/30/dimensionality/any/offset/0/sortBy/-watchedScore/superType/movies/type/program/type/bundle';
+ 	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/count/30/dimensionality/any/offset/0/sortBy/-watchedScore/superType/movies/type/program/type/bundle';
+
+  	var contentArray = [];
+  	var vuduContent = {};
+
+	rp(url_s)
+		.then(function (response) {
+			console.log('in GetReview - got response:' + response);
+			if (response) {
+				var sub = response.substring(10, response.length - 2);
+				var evaluation = eval('(' + sub + ')');
+				var totalCount = evaluation.totalCount[0];
+				console.log('totalCount:' + totalCount);
+				// get first search result
+
+				if (parseInt(totalCount) <= 0 && parseInt(totalCount) > 30) {
+					console.log('something is wrong with getTopMovie totalCount');
+				}
+				else {
+					// Get random 3 top movies
+					var randomIndex =[];
+					for (var i = 0; i < 3; i++) {
+						var randomNum = getRandomInt(0,9) + i * 10;
+						randomIndex[i] = randomNum;
+					}
+
+				  	for (var i = 0; i < 3; i++) {
+				  		console.log("in loop:" + i);
+				  		var randomNum = randomIndex[i];
+
+				  		vuduContent.contentId = evaluation.content[randomNum].contentId[0];
+				    	vuduContent.title = evaluation.content[randomNum].title[0];
+				    	vuduContent.description = evaluation.context[0].description[0];
+				    	vuduContent.tomatoMeter = evaluation.context[0].tomatoMeter[0];
+				    	contentArray[i] = vuduContent;
+				    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
+				  		// msg[i] = getFBElement(title, "test", contentId, "Check it out!");
+
+				  	}
+				    // Need to handle if there's no review
+				    // console.log(JSON.stringify(msg));
+				    cb(contentArray);
+				}
+			}
+		})
+		.catch(function (err) {
+			console.log('*******Error sending message: ', err);
+	});
 
   request({
     url: url_s,
@@ -641,80 +694,20 @@ function getReview(text, cb) {
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
 		});
-
-  // request({
-  //   url: url_s,
-  //   method: 'GET'
-  // }, function(error, response, body) {
-  //   if (error) {
-  //     console.log('*******Error sending message: ', error);
-  //   } else if (response.body) {
-  //     var sub = response.body.substring(10, response.body.length - 2);
-  //     var evaluation = eval('(' + sub + ')');
-  //     var totalCount = evaluation.totalCount[0];
-  //     // console.log('result:' + response.body);
-  //     // get first search result
-
-  //     if (parseInt(totalCount) === 0) {
-  //       console.log('cannot find a matching movie');
-  //     }
-  //     else {
-  //     	var msg = [];
-
-  //     	for (i = 0; i < parseInt(totalCount); i++) {
-  //     		var contentId = evaluation.content[i].contentId[0];
-  //       	var title = evaluation.content[i].title[0];
-  //       	var description = evaluation.context[i].description[0];
-
-  //     		msg[i] = getFBElement(title, description, contentId, "Check it out!");
-
-  //     	}
-  //       // Need to handle if there's no review
-
-  //       console.log("found it! " + title + "/id:" + contentId);
-  //       getTomatoReview(contentId, cb);
-
-
-  //     }
-  //   }
-  // });
 }
 
+// This should return an array
 function getFBElement(vuduContent) {
 	var element = [{
 	  "title": vuduContent.title,
-	  "subtitle": "TEST",
+	  "subtitle": "Movie description goes here",
 	  "image_url": "http://images2.vudu.com/poster2/" + vuduContent.contentId + "-l",
 	  "buttons": [{
 	    "type": "web_url",
 	    "url": "http://www.vudu.com/movies/#!content/" + vuduContent.contentId,
-	    "title": "check it out"
+	    "title": "View Details"
 		}]
 	}];
-
-	// var element = [{
- //          "title": "First card",
- //          "subtitle": "Element #1 of an hscroll",
- //          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
- //          "buttons": [{
- //            "type": "web_url",
- //            "url": "https://www.messenger.com/",
- //            "title": "Web url"
- //          }, {
- //            "type": "postback",
- //            "title": "Postback",
- //            "payload": "Payload for first element in a generic bubble",
- //          }],
- //        },{
- //          "title": "Second card",
- //          "subtitle": "Element #2 of an hscroll",
- //          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
- //          "buttons": [{
- //            "type": "postback",
- //            "title": "Postback",
- //            "payload": "Payload for second element in a generic bubble",
- //          }],
- //        }];
 
 	return element;
 }
@@ -743,8 +736,6 @@ function getSimilarMovie(contentId) {
   });
 
 }
-
-
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
