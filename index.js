@@ -615,14 +615,14 @@ function getReview(text, cb) {
 			}
 			console.log("getReview - something went wrong");
 		})
-		.then(getTomatoReview(vContent))
-		.then(function(vContent) {
+		.then(getTomatoReview(vuduContent))
+		.then(function(vuduContent) {
 			// prepare fb msg and execute callback
 			// console.log("finally! type of contenAry:", typeof contentAry);
 			var msg = [];
 			for (var i = 0; i < 1; i++) {
-				var vContent = contentAry[i];
-				msg[i] = getFBElement(vContent);
+				var vuduContent = contentAry[i];
+				msg[i] = getFBElement(vuduContent);
 				console.log("finally! " + JSON.stringify(msg[i]));
 
 			}
