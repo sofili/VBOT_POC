@@ -176,8 +176,8 @@ const actions = {
   ['fetch-top-movies'](sessionId, context, cb) {
     // Here should go the api call, e.g.:
     // context.forecast = apiCall(context.loc)
-    context.title = getTopMovie();
-    cb(context);
+    getTopMovie(cb);
+
   },
    ['get-response'](sessionId, context, cb) {
     var intent = context.intent;
