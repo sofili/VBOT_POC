@@ -508,7 +508,7 @@ function getTopMovie(cb) {
 			}
 		})
 		.catch(function (err) {
-			console.log('*******Error sending message: ', err);
+			console.log('---*******Error sending message: ', err);
 	});
 };
 
