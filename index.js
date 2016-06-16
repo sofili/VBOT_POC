@@ -621,7 +621,7 @@ function getReview(text, cb) {
 			// console.log("finally! type of contenAry:", typeof contentAry);
 			var msg = [];
 			for (var i = 0; i < 1; i++) {
-				var vuduContent = contentAry[i];
+				// var vuduContent = contentAry[i];
 				msg[i] = getFBElement(vuduContent);
 				console.log("finally! " + JSON.stringify(msg[i]));
 
