@@ -485,7 +485,7 @@ function getTopMovie(cb) {
 
 				  	for (var i = 0; i < 3; i++) {
 				  		var randomNum = randomIndex[i];
-				  		console.log("get top movie:" + randomNum);
+				  		// console.log("get top movie:" + randomNum);
 
 				  		var vuduContent = {};
 				  		vuduContent.contentId = evaluation.content[randomNum].contentId[0];
@@ -500,7 +500,7 @@ function getTopMovie(cb) {
 				  	}
 				    // Need to handle if there's no review
 				    // console.log(JSON.stringify(msg));
-				    cb({"test": [2, 4, 5]]});
+				    cb({"test": [2, 4, 5]});
 				}
 			}
 		})
