@@ -194,7 +194,7 @@ const actions = {
       }
       else {
         // recommendation
-        context.title = getTopMovie();
+        context.title = getTopMovie(cb);
       }
     }
     else if (intent == 'review') {
@@ -460,11 +460,8 @@ function sendSearchResult(text) {
 function getTopMovie(cb) {
 
  	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/count/30/dimensionality/any/offset/0/sortBy/-watchedScore/superType/movies/type/program/type/bundle/followup/totalCount';
-
   	var contentArray = [];
 
-
-  	// console.log("in getTopMovie");
 	rp(url_s)
 		.then(function (response) {
 			// console.log('in getTopMovie - got response:' + response);
@@ -503,7 +500,7 @@ function getTopMovie(cb) {
 				  	}
 				    // Need to handle if there's no review
 				    // console.log(JSON.stringify(msg));
-				    cb({"contentArray": contentArray});
+				    cb({"test": [2, 4, 5]]});
 				}
 			}
 		})
