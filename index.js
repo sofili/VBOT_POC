@@ -463,6 +463,8 @@ function getTopMovie(cb) {
   	var contentArray = [];
   	var vuduContent = {};
 
+  	console.log("in getTopMovie");
+
 	rp(url_s)
 		.then(function (response) {
 			// console.log('in getTopMovie - got response:' + response);
