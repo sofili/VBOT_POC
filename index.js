@@ -536,6 +536,7 @@ function getMovieInfo(text) {
 
 function getTomatoReview(vuduContent) {
 
+	console.log("called getTomatoReview");
 	var contentId = vuduContent.contentId;
 	var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/isByTopAuthor/followup/totalCount';
 
