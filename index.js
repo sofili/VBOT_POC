@@ -130,6 +130,8 @@ const actions = {
     if (recipientId) {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
+      console.log("Say message:" + JSON.stringify(message));
+
       fbMessage(recipientId, message, (err, data) => {
         if (err) {
           console.log(
@@ -626,7 +628,7 @@ function getReview(text, cb) {
 				console.log("finally! " + JSON.stringify(msg[i]));
 
 			}
-			cb(msg);
+			cb(vuduContent);
 
 		})
 		.catch(function (err) {
