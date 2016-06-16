@@ -681,40 +681,40 @@ function getReview(text, cb) {
 }
 
 function getFBElement(vuduContent) {
-	// var element = {
-	//   "title": vuduContent.title,
-	//   "subtitle": "TEST",
-	//   "image_url": "http://images2.vudu.com/poster2/" + vuduContent.contentId + "-l",
-	//   "buttons": [{
-	//     "type": "web_url",
-	//     "url": "http://www.vudu.com/movies/#!content/" + vuduContent.contentId,
-	//     "title": "check it out"
-	// 	}]
-	// };
-
 	var element = [{
-          "title": "First card",
-          "subtitle": "Element #1 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
-          "buttons": [{
-            "type": "web_url",
-            "url": "https://www.messenger.com/",
-            "title": "Web url"
-          }, {
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for first element in a generic bubble",
-          }],
-        },{
-          "title": "Second card",
-          "subtitle": "Element #2 of an hscroll",
-          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
-          "buttons": [{
-            "type": "postback",
-            "title": "Postback",
-            "payload": "Payload for second element in a generic bubble",
-          }],
-        }];
+	  "title": vuduContent.title,
+	  "subtitle": "TEST",
+	  "image_url": "http://images2.vudu.com/poster2/" + vuduContent.contentId + "-l",
+	  "buttons": [{
+	    "type": "web_url",
+	    "url": "http://www.vudu.com/movies/#!content/" + vuduContent.contentId,
+	    "title": "check it out"
+		}]
+	}];
+
+	// var element = [{
+ //          "title": "First card",
+ //          "subtitle": "Element #1 of an hscroll",
+ //          "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+ //          "buttons": [{
+ //            "type": "web_url",
+ //            "url": "https://www.messenger.com/",
+ //            "title": "Web url"
+ //          }, {
+ //            "type": "postback",
+ //            "title": "Postback",
+ //            "payload": "Payload for first element in a generic bubble",
+ //          }],
+ //        },{
+ //          "title": "Second card",
+ //          "subtitle": "Element #2 of an hscroll",
+ //          "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
+ //          "buttons": [{
+ //            "type": "postback",
+ //            "title": "Postback",
+ //            "payload": "Payload for second element in a generic bubble",
+ //          }],
+ //        }];
 
 	return element;
 }
