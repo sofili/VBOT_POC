@@ -507,26 +507,6 @@ function getTopMovie(cb) {
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
 	});
-
-  request({
-    url: url_s,
-    method: 'GET'
-  }, function(error, response, body) {
-    if (error) {
-      console.log('*******Error sending message: ', error);
-    } else if (response.body) {
-      var sub = response.body.substring(10, response.body.length - 2);
-      var evaluation = eval('(' + sub + ')');
-
-      var randomNum = getRandomInt(1,30);
-      var id = evaluation.content[randomNum].contentId[0];
-      var title = evaluation.content[randomNum].title[0];
-      var description = evaluation.content[randomNum].description[0];
-
-      console.log("found it! " + title);
-      return title;
-    }
-  });
 };
 
 function getMovieInfo(text) {
