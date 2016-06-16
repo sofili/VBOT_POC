@@ -44,7 +44,7 @@ const fbReq = request.defaults({
   headers: {'Content-Type': 'application/json'},
 });
 
-const fbMessage = (recipientId, elementsDict, cb) => {
+const fbMessage = (recipientId, elementsArray, cb) => {
   const opts = {
     form: {
       recipient: {
@@ -55,8 +55,7 @@ const fbMessage = (recipientId, elementsDict, cb) => {
 	      type: "template",
 	      payload: {
 	        "template_type": "generic",
-	        elementsDict
-	        // "elements": elementsArray
+	        "elements": elementsArray
 	      }
 	    }
       },
@@ -679,19 +678,28 @@ function getReview(text, cb) {
 }
 
 // This should return an array
-function getFBElement(vuduContent) {
-	var element = [{
-	  "title": vuduContent.title,
-	  "subtitle": "Movie description goes here",
-	  "image_url": "http://images2.vudu.com/poster2/" + vuduContent.contentId + "-l",
-	  "buttons": [{
-	    "type": "web_url",
-	    "url": "http://www.vudu.com/movies/#!content/" + vuduContent.contentId,
-	    "title": "View Details"
-		}]
-	}];
+function getFBElement(contents) {
+	var msgArray = contents["Action"];
 
-	return element;
+	var outputArray = [];
+
+	for (var i = 0; i < msgArray.length; i++) {
+		var vuduContent = outputArray[i];
+
+		var element = {
+		  "title": vuduContent.title,
+		  "subtitle": vuduContent.description,
+		  "image_url": "http://images2.vudu.com/poster2/" + vuduContent.contentId + "-l",
+		  "buttons": [{
+		    "type": "web_url",
+		    "url": "http://www.vudu.com/movies/#!content/" + vuduContent.contentId,
+		    "title": "View Details"
+			}]
+		};
+
+		outputArray[i] = element;
+	}
+	return outputArray;
 }
 
 function getSimilarMovie(contentId) {
