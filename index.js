@@ -491,16 +491,12 @@ function getTopMovie(cb) {
 				  		console.log("get top movie:" + randomNum);
 
 				  		vuduContent.contentId = evaluation.content[randomNum].contentId[0];
-				  		console.log(vuduContent.contentId)
 				    	vuduContent.title = evaluation.content[randomNum].title[0];
-				    	console.log(vuduContent.title)
-				    	vuduContent.description = evaluation.context[randomNum].description[0];
-				    	console.log(vuduContent.description)
-				    	vuduContent.tomatoMeter = evaluation.context[randomNum].tomatoMeter[0];
-				    	console.log(vuduContent.tomatoMeter)
+				    	vuduContent.description = evaluation.content[randomNum].description[0];
+				    	vuduContent.tomatoMeter = evaluation.content[randomNum].tomatoMeter[0];
+
 				    	contentArray[i] = vuduContent;
 				    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
-				  		// msg[i] = getFBElement(title, "test", contentId, "Check it out!");
 
 				  	}
 				    // Need to handle if there's no review
@@ -650,7 +646,7 @@ function getReview(text, cb) {
 				  		console.log("in loop:" + i);
 				  		vuduContent.contentId = evaluation.content[i].contentId[0];
 				    	vuduContent.title = evaluation.content[i].title[0];
-				    	// description = evaluation.context[0].description[0];
+
 				    	contentArray[i] = vuduContent;
 				    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
 				  		// msg[i] = getFBElement(title, "test", contentId, "Check it out!");
