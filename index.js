@@ -458,7 +458,7 @@ function sendSearchResult(text) {
 
 function getTopMovie(cb) {
 
- 	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/count/30/dimensionality/any/offset/0/sortBy/-watchedScore/superType/movies/type/program/type/bundle';
+ 	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/count/30/dimensionality/any/offset/0/sortBy/-watchedScore/superType/movies/type/program/type/bundle/followup/totalCount';
 
   	var contentArray = [];
   	var vuduContent = {};
@@ -467,7 +467,7 @@ function getTopMovie(cb) {
 
 	rp(url_s)
 		.then(function (response) {
-			console.log('in getTopMovie - got response:' + response);
+			// console.log('in getTopMovie - got response:' + response);
 			if (response) {
 				var sub = response.substring(10, response.length - 2);
 				var evaluation = eval('(' + sub + ')');
