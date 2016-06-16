@@ -131,6 +131,7 @@ const actions = {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
       console.log("Say message:" + JSON.stringify(message));
+      console.log("Say context:" + JSON.stringify(context));
 
       fbMessage(recipientId, message, (err, data) => {
         if (err) {
