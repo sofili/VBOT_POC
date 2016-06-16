@@ -686,18 +686,26 @@ function getFBElement(contents) {
 		var vuduContent = outputArray[i];
 		console.log(JSON.stringify(vuduContent));
 
+		var title = vuduContent.title;
+		console.log("title:", title);
+		var description = vuduContent.description;
+		console.log("description:", description);
+		var contentId = vuduContent.contentId;
+		console.log("contentId:", contentId);
+
 		var element = {
-		  "title": vuduContent.title,
-		  "subtitle": vuduContent.description,
-		  "image_url": "http://images2.vudu.com/poster2/" + vuduContent.contentId + "-l",
+		  "title": title,
+		  "subtitle": description,
+		  "image_url": "http://images2.vudu.com/poster2/" + contentId + "-l",
 		  "buttons": [{
 		    "type": "web_url",
-		    "url": "http://www.vudu.com/movies/#!content/" + vuduContent.contentId,
+		    "url": "http://www.vudu.com/movies/#!content/" + contentId,
 		    "title": "View Details"
 			}]
 		};
 
 		outputArray[i] = element;
+		console.log("element:", JSON.stringify(element));
 	}
 	console.log("print out output array");
 	console.log(outputArray);
