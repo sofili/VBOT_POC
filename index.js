@@ -595,7 +595,10 @@ function getContentSimilarSearch(vuduContent) {
 					console.log("in else");
 					var similarMoviesArray = [];
 
-					for (var i = 0; i < 10; i ++) {
+					var maxCount = (totalCount > 10) ? 10 : totalCount;
+					console.log("maxCount:", maxCount);
+
+					for (var i = 0; i < maxCount; i ++) {
 						console.log("in for");
 						var movieElement = {};
 
