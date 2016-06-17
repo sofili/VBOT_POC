@@ -625,7 +625,7 @@ function getTomatoReview(vuduContent) {
 	var contentId = vuduContent.contentId;
 	var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/isByTopAuthor/followup/totalCount';
 
-	rp(url_review)
+	return rp(url_review)
 		.then(function (response) {
 			console.log('in getTomatoReview - got response:' + response);
 			if (response) {
