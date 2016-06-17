@@ -123,7 +123,7 @@ const actions = {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
 
-      console.log("Say context:" + JSON.stringify(context);
+      console.log("Say context:" + JSON.stringify(context));
       var elements = getFBElement(context);
       console.log("fb msg:" + JSON.stringify(elements));
 
