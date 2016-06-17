@@ -123,7 +123,7 @@ const actions = {
       // Yay, we found our recipient!
       // Let's forward our bot response to her.
 
-      console.log("Say context:" + JSON.stringify(context));
+      console.log("Say context:" + JSON.stringify(context);
       var elements = getFBElement(context);
       console.log("fb msg:" + JSON.stringify(elements));
 
@@ -605,6 +605,7 @@ function getContentSimilarSearch(vuduContent) {
 						similarMoviesArray[i] = movieElement;
 						console.log( i,"-similar movie:", JSON.stringify(movieElement));
 					}
+					console.log("before the final:", similarMoviesArray);
 					return similarMoviesArray;
 				}
 			}
