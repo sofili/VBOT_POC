@@ -782,6 +782,7 @@ function getSimilarMovie(text, cb) {
 		})
 		.then(function(similarMoviesArray) {
 			console.log("final then!");
+			console.log("final array,", similarMoviesArray);
 			cb({"Action": similarMoviesArray});
 		})
 		.catch(function (err) {
