@@ -780,7 +780,7 @@ function getSimilarMovie(text, cb) {
 		.then(function(vuduContent) {
 			console.log("~~~~second then!");
 			getContentSimilarSearch(vuduContent);
-		}
+		})
 		.then(function(similarMoviesArray) {
 			cb({"Action": similarMoviesArray});
 		})
