@@ -584,11 +584,13 @@ function getContentSimilarSearch(vuduContent) {
 			if (response) {
 				console.log("111 test");
 				console.log("111 type,", typeof response);
+				console.log("111 length:", response.length);
 				var sub = response.substring(10, response.length - 2);
 				var evaluation = eval('(' + sub + ')');
+				console.log('111evaluation:', evaluation);
 				var totalCount = evaluation.totalCount[0];
 				console.log('111getContentSimilarSearch-totalCount:' + totalCount);
-				console.log('111evaluation:', evaluation);
+
 				// get first search result
 
 				if (parseInt(totalCount) === 0) {
