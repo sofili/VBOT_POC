@@ -127,15 +127,22 @@ const actions = {
       var elements = getFBElement(context);
       console.log("fb msg:" + JSON.stringify(elements));
 
-      var msg = {
-	    attachment: {
-	      type: "template",
-	      payload: {
-	        "template_type": "generic",
-	        "elements": elements
-	      }
-	    }
-      };
+      var msg;
+
+      if (elements) {
+		msg = {
+			attachment: {
+				type: "template",
+				payload: {
+				"template_type": "generic",
+				"elements": elements
+				}
+			}
+		};
+      }
+      else {
+      	msg = message;
+      }
 
       fbMessage(recipientId, msg, (err, data) => {
         if (err) {
@@ -721,27 +728,35 @@ function getFBElement(contents) {
 	var msgArray = contents["Action"];
 	var outputArray = [];
 
-	for (var i = 0; i < msgArray.length; i++) {
-		var vuduContent = msgArray[i];
+	if (msgArray) {
+		for (var i = 0; i < msgArray.length; i++) {
+			var vuduContent = msgArray[i];
 
-		var title = vuduContent.title;
-		var description = vuduContent.description;
-		var contentId = vuduContent.contentId;
+			var title = vuduContent.title;
+			var description = vuduContent.description;
+			var contentId = vuduContent.contentId;
 
-		var element = {
-		  "title": title,
-		  "subtitle": description ? description : "Release Date:" + vuduContent.releaseTime + " Rating:" + vuduContent.mpaaRating ,
-		  "image_url": "http://images2.vudu.com/poster2/" + contentId + "-l",
-		  "buttons": [{
-		    "type": "web_url",
-		    "url": "http://www.vudu.com/movies/#!content/" + contentId,
-		    "title": "View Details"
-			}]
-		};
+			var element = {
+			  "title": title,
+			  "subtitle": description ? description : "Release Date:" + vuduContent.releaseTime + " Rating:" + vuduContent.mpaaRating ,
+			  "image_url": "http://images2.vudu.com/poster2/" + contentId + "-l",
+			  "buttons": [{
+			    "type": "web_url",
+			    "url": "http://www.vudu.com/movies/#!content/" + contentId,
+			    "title": "View Details"
+				}]
+			};
 
-		outputArray[i] = element;
+			outputArray[i] = element;
+		}
+		return outputArray;
 	}
-	return outputArray;
+	else {
+		// No custom action data found, could be wit.ai reply
+		return;
+	}
+
+
 }
 
 function getSimilarMovie(text, cb) {
