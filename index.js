@@ -621,7 +621,7 @@ function getContentSimilarSearch(vuduContent) {
 			}
 		})
 		.catch(function (err) {
-			console.log('*******Error sending message: ', err);
+			console.log('111*******Error sending message: ', err);
 	});
 
 }
