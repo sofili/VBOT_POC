@@ -575,7 +575,7 @@ function getMovieInfo(text) {
 
 function getContentSimilarSearch(vuduContent) {
 
-	console.log("called getContentSimilarSearch");
+	// console.log("called getContentSimilarSearch");
 	var contentId = vuduContent.contentId;
 	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10';
 
@@ -605,6 +605,7 @@ function getContentSimilarSearch(vuduContent) {
 						movieElement.mpaaRating = evaluation.content[i].mpaaRating[0];
 
 						similarMoviesArray[i] = movieElement;
+						console.log("similar movie:", JSON.stringify(movieElement));
 					}
 					return similarMoviesArray;
 				}
