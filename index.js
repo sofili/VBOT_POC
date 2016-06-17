@@ -585,18 +585,18 @@ function getContentSimilarSearch(vuduContent) {
 				var sub = response.substring(10, response.length - 2);
 				var evaluation = eval('(' + sub + ')');
 				var totalCount = evaluation.totalCount[0];
-				console.log('getContentSimilarSearch-totalCount:' + totalCount);
+				console.log('111getContentSimilarSearch-totalCount:' + totalCount);
 				// get first search result
 
 				if (parseInt(totalCount) === 0) {
 					console.log('cannot find a similar movie for contentId:' + contentId);
 				}
 				else {
-					console.log("in else");
+					console.log("111in else");
 					var similarMoviesArray = [];
 
 					var maxCount = (totalCount > 10) ? 10 : totalCount;
-					console.log("maxCount:", maxCount);
+					console.log("111maxCount:", maxCount);
 
 					for (var i = 0; i < maxCount; i ++) {
 						console.log("in for");
