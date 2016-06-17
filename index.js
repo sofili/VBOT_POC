@@ -580,7 +580,7 @@ function getContentSimilarSearch(vuduContent) {
 
 	rp(url_s)
 		.then(function (response) {
-			console.log('in getContentSimilarSearch - got response:' + response);
+			// console.log('in getContentSimilarSearch - got response:' + response);
 			if (response) {
 				var sub = response.substring(10, response.length - 2);
 				var evaluation = eval('(' + sub + ')');
@@ -599,9 +599,13 @@ function getContentSimilarSearch(vuduContent) {
 						var movieElement = {};
 
 						movieElement.title = evaluation.content[i].title[0];
+						console.log("title:", movieElement.title);
 						movieElement.contentId = evaluation.content[i].contentId[0];
+						console.log("title:", movieElement.title);
 						movieElement.releaseTime = evaluation.content[i].releaseTime[0];
+						console.log("title:", movieElement.title);
 						movieElement.mpaaRating = evaluation.content[i].mpaaRating[0];
+						console.log("title:", movieElement.mpaaRating);
 
 						similarMoviesArray[i] = movieElement;
 						console.log("similar movie:", JSON.stringify(movieElement));
