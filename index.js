@@ -777,11 +777,7 @@ function getSimilarMovie(text, cb) {
 				console.log("getSimilarMovie - something went wrong");
 			}
 		})
-		.then(function(vuduContent) {
-			var similarMoviesArray = getContentSimilarSearch(vuduContent);
-			console.log("second then:", similarMoviesArray);
-			return similarMoviesArray;
-		})
+		.then(getContentSimilarSearch(vuduContent))
 		.then(function(similarMoviesArray) {
 			console.log("final then!");
 			console.log("final array,", similarMoviesArray);
