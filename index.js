@@ -142,7 +142,9 @@ const actions = {
       }
       else {
       	console.log("wit.ai message:", message);
-      	msg = message;
+      	msg = {
+	    	text: message,
+	    };
       }
 
       fbMessage(recipientId, msg, (err, data) => {
