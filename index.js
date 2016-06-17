@@ -575,13 +575,13 @@ function getMovieInfo(text) {
 
 function getContentSimilarSearch(vuduContent) {
 
-	// console.log("called getContentSimilarSearch");
+	console.log("called getContentSimilarSearch");
 	var contentId = vuduContent.contentId;
 	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10';
 
 	rp(url_s)
 		.then(function (response) {
-			console.log('in getContentSimilarSearch - got response:' + response);
+			// console.log('in getContentSimilarSearch - got response:' + response);
 			if (response) {
 				var sub = response.substring(10, response.length - 2);
 				var evaluation = eval('(' + sub + ')');
