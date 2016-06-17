@@ -597,10 +597,12 @@ function getContentSimilarSearch(vuduContent) {
 					var similarMoviesArray = [];
 
 					for (var i = 0; i < 10; i ++) {
-						// Title and ContentId should be already there
-						var movieElement = vuduContent;
-						movieElement.releaseTime = evaluation.content[0].releaseTime[0];
-						movieElement.mpaaRating = evaluation.content[0].mpaaRating[0];
+						var movieElement = {};
+
+						movieElement.title = evaluation.content[i].title[0];
+						movieElement.contentId = evaluation.content[i].contentId[0];
+						movieElement.releaseTime = evaluation.content[i].releaseTime[0];
+						movieElement.mpaaRating = evaluation.content[i].mpaaRating[0];
 
 						similarMoviesArray[i] = movieElement;
 					}
@@ -771,8 +773,8 @@ function getSimilarMovie(text, cb) {
 				else {
 					var vuduContent = {};
 
-					vuduContent.contentId = evaluation.content[i].contentId[0];
-			    	vuduContent.title = evaluation.content[i].title[0];
+					vuduContent.contentId = evaluation.content[0].contentId[0];
+			    	vuduContent.title = evaluation.content[0].title[0];
 
 				    console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
 
