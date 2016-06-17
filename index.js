@@ -304,7 +304,6 @@ app.post('/webhook', (req, res) => {
             // Now it's waiting for further messages to proceed.
             console.log('Waiting for futher messages.');
 
-            console.log("runAction - ", JSON.stringify(context));
             // Based on the session state, you might want to reset the session.
             // This depends heavily on the business logic of your bot.
             // Example:
