@@ -823,6 +823,7 @@ function getSimilarMovie(text, cb) {
 				// 	.catch(function (err) {
 				// 		console.log('111*******Error sending message: ', err);
 				// });
+				return "!!!!!test";
 		})
 		.then(function(similarMoviesArray) {
 			console.log("final then!");
