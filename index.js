@@ -44,21 +44,13 @@ const fbReq = request.defaults({
   headers: {'Content-Type': 'application/json'},
 });
 
-const fbMessage = (recipientId, elementsArray, cb) => {
+const fbMessage = (recipientId, msg, cb) => {
   const opts = {
     form: {
       recipient: {
         id: recipientId,
       },
-      message: {
-	    attachment: {
-	      type: "template",
-	      payload: {
-	        "template_type": "generic",
-	        "elements": elementsArray
-	      }
-	    }
-      },
+      message: msg,
     },
   };
   fbReq(opts, (err, resp, data) => {
@@ -132,8 +124,18 @@ const actions = {
       // Let's forward our bot response to her.
 
       console.log("Say context:" + JSON.stringify(context));
-      var msg = getFBElement(context);
-      console.log("fb msg:" + JSON.stringify(msg));
+      var elements = getFBElement(context);
+      console.log("fb msg:" + JSON.stringify(elements));
+
+      var msg = {
+	    attachment: {
+	      type: "template",
+	      payload: {
+	        "template_type": "generic",
+	        "elements": elements
+	      }
+	    }
+      };
 
       fbMessage(recipientId, msg, (err, data) => {
         if (err) {
@@ -233,11 +235,7 @@ const actions = {
     cb(context);
   },
   ['similar-movie'](sessionId, context, cb) {
-    // context.url = "http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/" + context.loc
-    contentId = sendSearchResult(context.movieTitle);
-    context.title = getSimilarMovie(contentId);
-    cb(context);
-
+    getSimilarMovie(context.movieTitle, cb);
   }
 };
 
@@ -575,6 +573,50 @@ function getMovieInfo(text) {
 
 };
 
+function getContentSimilarSearch(vuduContent) {
+
+	console.log("called getContentSimilarSearch");
+	var contentId = vuduContent.contentId;
+	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10';
+
+	rp(url_s)
+		.then(function (response) {
+			console.log('in getContentSimilarSearch - got response:' + response);
+			if (response) {
+				var sub = response.substring(10, response.length - 2);
+				var evaluation = eval('(' + sub + ')');
+				var totalCount = evaluation.totalCount[0];
+				console.log('totalCount:' + totalCount);
+				// get first search result
+
+				if (parseInt(totalCount) === 0) {
+				console.log('cannot find a similar movie for contentId:' + contentId);
+				}
+				else {
+
+					var similarMoviesArray = [];
+
+					for (var i = 0; i < 10; i ++) {
+						// Title and ContentId should be already there
+						var movieElement = vuduContent;
+						movieElement.releaseTime = evaluation.content[0].releaseTime[0];
+						movieElement.mpaaRating = evaluation.content[0].mpaaRating[0];
+
+						similarMoviesArray[i] = movieElement;
+					}
+				    return {"Action": similarMoviesArray};
+				}
+			}
+			else {
+				console.log("getContentSimilarSearch - something went wrong");
+			}
+		})
+		.catch(function (err) {
+			console.log('*******Error sending message: ', err);
+	});
+
+}
+
 function getTomatoReview(vuduContent) {
 
 	console.log("called getTomatoReview");
@@ -615,11 +657,11 @@ function getTomatoReview(vuduContent) {
 
 function getReview(text, cb) {
 
-  console.log('send search result for ' + text);
-  // var search = text.substring(12, text.lenght);
-  var encodedSearch = encodeURIComponent(text);
-  console.log('type of encoded search :', typeof encodedSearch);
-  console.log('encoded search: ', encodedSearch);
+	console.log('send search result for ' + text);
+	// var search = text.substring(12, text.lenght);
+	var encodedSearch = encodeURIComponent(text);
+	console.log('type of encoded search :', typeof encodedSearch);
+	console.log('encoded search: ', encodedSearch);
 
   	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount/count/3';
 
@@ -704,29 +746,44 @@ function getFBElement(contents) {
 	return outputArray;
 }
 
-function getSimilarMovie(contentId) {
-  var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10';
+function getSimilarMovie(text, cb) {
+		console.log('send search result for ' + text);
+	// var search = text.substring(12, text.lenght);
+	var encodedSearch = encodeURIComponent(text);
+	console.log('type of encoded search :', typeof encodedSearch);
+	console.log('encoded search: ', encodedSearch);
 
-  request({
-    url: url_s,
-    method: 'GET'
-  }, function(error, response, body) {
-    if (error) {
-      console.log('*******Error sending message: ', error);
-    } else if (response.body) {
-      var sub = response.body.substring(10, response.body.length - 2);
-      var evaluation = eval('(' + sub + ')');
+  	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount/count/3';
 
-      var randomNum = getRandomInt(1,10);
-      var title = evaluation.content[randomNum].title[0];
-      var contentId = evaluation.content[randomNum].contentId[0];
-      var description = evaluation.content[randomNum].description[0];
+	rp(url_s)
+		.then(function (response) {
+			console.log('in getSimilarMovie - got response:' + response);
+			if (response) {
+				var sub = response.substring(10, response.length - 2);
+				var evaluation = eval('(' + sub + ')');
+				var totalCount = evaluation.totalCount[0];
+				console.log('totalCount:' + totalCount);
+				// get first search result
 
-      console.log("found similar movie! " + title);
-      return title;
-    }
-  });
+				if (parseInt(totalCount) === 0) {
+				console.log('cannot find a matching movie');
+				}
+				else {
+					var vuduContent = {};
 
+					vuduContent.contentId = evaluation.content[i].contentId[0];
+			    	vuduContent.title = evaluation.content[i].title[0];
+
+				    console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
+
+				    return vuduContent;
+				}
+			}
+		})
+		.then(getContentSimilarSearch(vuduContent, cb))
+		.catch(function (err) {
+			console.log('*******Error sending message: ', err);
+		});
 }
 
 function getRandomInt(min, max) {
