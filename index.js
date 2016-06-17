@@ -586,6 +586,7 @@ function getContentSimilarSearch(vuduContent) {
 				var evaluation = eval('(' + sub + ')');
 				var totalCount = evaluation.totalCount[0];
 				console.log('111getContentSimilarSearch-totalCount:' + totalCount);
+				console.log('111evaluation:', evaluation);
 				// get first search result
 
 				if (parseInt(totalCount) === 0) {
