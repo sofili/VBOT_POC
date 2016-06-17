@@ -573,7 +573,7 @@ function getMovieInfo(text) {
 
 };
 
-function getContentSimilarSearch(vuduContent) {
+function getContentSimilarSearch(vuduContent, cb) {
 
 	console.log("called getContentSimilarSearch");
 	var contentId = vuduContent.contentId;
@@ -606,7 +606,7 @@ function getContentSimilarSearch(vuduContent) {
 
 						similarMoviesArray[i] = movieElement;
 					}
-				    return {"Action": similarMoviesArray};
+				    cb({"Action": similarMoviesArray});
 				}
 			}
 			else {
