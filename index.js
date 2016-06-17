@@ -578,7 +578,7 @@ function getContentSimilarSearch(vuduContent) {
 	var contentId = vuduContent.contentId;
 	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10/followup/totalCount';
 
-	rp(url_s)
+	return rp(url_s)
 		.then(function (response) {
 			console.log('in getContentSimilarSearch - got response:' + response);
 			if (response) {
@@ -780,50 +780,50 @@ function getSimilarMovie(text, cb) {
 			}
 		})
 		.then(function(vuduContent) {
-			// return getContentSimilarSearch(vuduContent);
-				console.log("called getContentSimilarSearch");
-				var contentId = vuduContent.contentId;
-				var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10/followup/totalCount';
+			return getContentSimilarSearch(vuduContent);
+				// console.log("called getContentSimilarSearch");
+				// var contentId = vuduContent.contentId;
+				// var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10/followup/totalCount';
 
-				rp(url_s)
-					.then(function (response) {
-						console.log('in getContentSimilarSearch - got response:' + response);
-						if (response) {
-							var sub = response.substring(10, response.length - 2);
-							var evaluation = eval('(' + sub + ')');
-							var totalCount = evaluation.totalCount[0];
+				// rp(url_s)
+				// 	.then(function (response) {
+				// 		console.log('in getContentSimilarSearch - got response:' + response);
+				// 		if (response) {
+				// 			var sub = response.substring(10, response.length - 2);
+				// 			var evaluation = eval('(' + sub + ')');
+				// 			var totalCount = evaluation.totalCount[0];
 
-							// get first search result
+				// 			// get first search result
 
-							if (parseInt(totalCount) === 0) {
-								console.log('cannot find a similar movie for contentId:' + contentId);
-							}
-							else {
-								var similarMoviesArray = [];
+				// 			if (parseInt(totalCount) === 0) {
+				// 				console.log('cannot find a similar movie for contentId:' + contentId);
+				// 			}
+				// 			else {
+				// 				var similarMoviesArray = [];
 
-								for (var i = 0; i < evaluation.content.length; i ++) {
-									var movieElement = {};
+				// 				for (var i = 0; i < evaluation.content.length; i ++) {
+				// 					var movieElement = {};
 
-									movieElement.title = evaluation.content[i].title[0];
-									movieElement.contentId = evaluation.content[i].contentId[0];
-									movieElement.releaseTime = evaluation.content[i].releaseTime[0];
-									movieElement.mpaaRating = evaluation.content[i].mpaaRating[0];
+				// 					movieElement.title = evaluation.content[i].title[0];
+				// 					movieElement.contentId = evaluation.content[i].contentId[0];
+				// 					movieElement.releaseTime = evaluation.content[i].releaseTime[0];
+				// 					movieElement.mpaaRating = evaluation.content[i].mpaaRating[0];
 
-									similarMoviesArray[i] = movieElement;
-									console.log( i,"-similar movie:", JSON.stringify(movieElement));
-								}
-								console.log("before the final:", similarMoviesArray);
-								return ["test", "to", "rjwo"];
-								// return similarMoviesArray;
-							}
-						}
-						else {
-							console.log("getContentSimilarSearch - something went wrong");
-						}
-					})
-					.catch(function (err) {
-						console.log('111*******Error sending message: ', err);
-				});
+				// 					similarMoviesArray[i] = movieElement;
+				// 					console.log( i,"-similar movie:", JSON.stringify(movieElement));
+				// 				}
+				// 				console.log("before the final:", similarMoviesArray);
+				// 				return ["test", "to", "rjwo"];
+				// 				// return similarMoviesArray;
+				// 			}
+				// 		}
+				// 		else {
+				// 			console.log("getContentSimilarSearch - something went wrong");
+				// 		}
+				// 	})
+				// 	.catch(function (err) {
+				// 		console.log('111*******Error sending message: ', err);
+				// });
 
 		})
 		.then(function(similarMoviesArray) {
