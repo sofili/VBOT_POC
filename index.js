@@ -582,6 +582,7 @@ function getContentSimilarSearch(vuduContent) {
 		.then(function (response) {
 			console.log('in getContentSimilarSearch - got response:' + response);
 			if (response) {
+				console.log("111 test");
 				var sub = response.substring(10, response.length - 2);
 				var evaluation = eval('(' + sub + ')');
 				var totalCount = evaluation.totalCount[0];
