@@ -573,7 +573,7 @@ function getMovieInfo(text) {
 
 };
 
-function getContentSimilarSearch(vuduContent, cb) {
+function getContentSimilarSearch(vuduContent) {
 
 	console.log("called getContentSimilarSearch");
 	var contentId = vuduContent.contentId;
@@ -606,7 +606,7 @@ function getContentSimilarSearch(vuduContent, cb) {
 
 						similarMoviesArray[i] = movieElement;
 					}
-				    cb({"Action": similarMoviesArray});
+					return similarMoviesArray;
 				}
 			}
 			else {
@@ -699,7 +699,9 @@ function getReview(text, cb) {
 				    return vuduContent;
 				}
 			}
-			console.log("getReview - something went wrong");
+			else {
+				console.log("getReview - something went wrong");
+			}
 		})
 		.then(getTomatoReview(vuduContent))
 		.then(function(vuduContent) {
@@ -768,7 +770,7 @@ function getSimilarMovie(text, cb) {
 				// get first search result
 
 				if (parseInt(totalCount) === 0) {
-				console.log('cannot find a matching movie');
+					console.log('cannot find a matching movie');
 				}
 				else {
 					var vuduContent = {};
@@ -782,7 +784,10 @@ function getSimilarMovie(text, cb) {
 				}
 			}
 		})
-		.then(getContentSimilarSearch(vuduContent, cb))
+		.then(getContentSimilarSearch(vuduContent))
+		.then(function(similarMoviesArray) {
+			cb({"Action": similarMoviesArray});
+		})
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
 		});
