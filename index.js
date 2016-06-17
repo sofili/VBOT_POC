@@ -141,6 +141,7 @@ const actions = {
 		};
       }
       else {
+      	console.log("wit.ai message:", message);
       	msg = message;
       }
 
