@@ -581,7 +581,7 @@ function getContentSimilarSearch(vuduContent) {
 
 	rp(url_s)
 		.then(function (response) {
-			// console.log('in getContentSimilarSearch - got response:' + response);
+			console.log('in getContentSimilarSearch - got response:' + response);
 			if (response) {
 				var sub = response.substring(10, response.length - 2);
 				var evaluation = eval('(' + sub + ')');
