@@ -667,9 +667,6 @@ function getReview(text, cb) {
 
   	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount/count/3';
 
-  	var contentArray = [];
-  	var vuduContent = {};
-
 	rp(url_s)
 		.then(function (response) {
 			console.log('in GetReview - got response:' + response);
@@ -684,16 +681,11 @@ function getReview(text, cb) {
 				console.log('cannot find a matching movie');
 				}
 				else {
+					var vuduContent = {};
+				  	vuduContent.contentId = evaluation.content[i].contentId[0];
+			    	vuduContent.title = evaluation.content[i].title[0];
 
-				  	for (var i = 0; i < 1; i++) {
-				  		console.log("in loop:" + i);
-				  		vuduContent.contentId = evaluation.content[i].contentId[0];
-				    	vuduContent.title = evaluation.content[i].title[0];
-
-				    	contentArray[i] = vuduContent;
-				    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
-
-				  	}
+			    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
 				    // Need to handle if there's no review
 				    // console.log(JSON.stringify(msg));
 				    return vuduContent;
@@ -751,10 +743,8 @@ function getFBElement(contents) {
 }
 
 function getSimilarMovie(text, cb) {
-		console.log('send search result for ' + text);
-	// var search = text.substring(12, text.lenght);
+
 	var encodedSearch = encodeURIComponent(text);
-	console.log('type of encoded search :', typeof encodedSearch);
 	console.log('encoded search: ', encodedSearch);
 
   	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount/count/3';
@@ -782,6 +772,9 @@ function getSimilarMovie(text, cb) {
 
 				    return vuduContent;
 				}
+			}
+			else {
+				console.log("getSimilarMovie - something went wrong");
 			}
 		})
 		.then(getContentSimilarSearch(vuduContent))
