@@ -772,8 +772,7 @@ function getSimilarMovie(text, cb) {
 
 				    console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
 
-				    resolve(vuduContent);
-				    // return vuduContent;
+				    return vuduContent;
 				}
 			}
 			else {
@@ -781,7 +780,7 @@ function getSimilarMovie(text, cb) {
 			}
 		})
 		.then(function(vuduContent) {
-			resolve(getContentSimilarSearch(vuduContent));
+			// return getContentSimilarSearch(vuduContent);
 				// console.log("called getContentSimilarSearch");
 				// var contentId = vuduContent.contentId;
 				// var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10/followup/totalCount';
@@ -824,6 +823,7 @@ function getSimilarMovie(text, cb) {
 				// 	.catch(function (err) {
 				// 		console.log('111*******Error sending message: ', err);
 				// });
+				return ["test", "to", "rjwo"];
 		})
 		.then(function(similarMoviesArray) {
 			console.log("final then!");
