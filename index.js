@@ -576,7 +576,7 @@ function getContentSimilarSearch(vuduContent) {
 
 	console.log("called getContentSimilarSearch");
 	var contentId = vuduContent.contentId;
-	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/1/followup/totalCount';
+	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSimilarSearch/contentId/' + contentId +'/count/10/followup/totalCount';
 
 	rp(url_s)
 		.then(function (response) {
