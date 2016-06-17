@@ -589,13 +589,14 @@ function getContentSimilarSearch(vuduContent) {
 				// get first search result
 
 				if (parseInt(totalCount) === 0) {
-				console.log('cannot find a similar movie for contentId:' + contentId);
+					console.log('cannot find a similar movie for contentId:' + contentId);
 				}
 				else {
-
+					console.log("in else");
 					var similarMoviesArray = [];
 
 					for (var i = 0; i < 10; i ++) {
+						console.log("in for");
 						var movieElement = {};
 
 						movieElement.title = evaluation.content[i].title[0];
