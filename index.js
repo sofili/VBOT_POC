@@ -695,7 +695,7 @@ function getReview(text, cb) {
 				console.log("getReview - something went wrong");
 			}
 		})
-		.then(getTomatoReview(vuduContent))
+		.then( return getTomatoReview(vuduContent))
 		.then(function(vuduContent) {
 			// prepare fb msg and execute callback
 			// console.log("finally! type of contenAry:", typeof contentAry);
@@ -777,7 +777,7 @@ function getSimilarMovie(text, cb) {
 				console.log("getSimilarMovie - something went wrong");
 			}
 		})
-		.then(getContentSimilarSearch(vuduContent))
+		.then(return getContentSimilarSearch(vuduContent))
 		.then(function(similarMoviesArray) {
 			console.log("final then!");
 			console.log("final array,", similarMoviesArray);
