@@ -594,9 +594,7 @@ function getContentSimilarSearch(vuduContent) {
 				else {
 					var similarMoviesArray = [];
 
-					var maxCount = (totalCount > 10) ? 10 : totalCount;
-					console.log("111maxCount:", maxCount);
-					for (var i = 0; i < maxCount; i ++) {
+					for (var i = 0; i < evaluation.content.length; i ++) {
 						var movieElement = {};
 
 						movieElement.title = evaluation.content[i].title[0];
@@ -605,7 +603,7 @@ function getContentSimilarSearch(vuduContent) {
 						movieElement.mpaaRating = evaluation.content[i].mpaaRating[0];
 
 						similarMoviesArray[i] = movieElement;
-						console.log("similar movie:", JSON.stringify(movieElement));
+						console.log( i,"-similar movie:", JSON.stringify(movieElement));
 					}
 					return similarMoviesArray;
 				}
