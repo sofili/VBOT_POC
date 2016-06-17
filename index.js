@@ -600,13 +600,9 @@ function getContentSimilarSearch(vuduContent) {
 						var movieElement = {};
 
 						movieElement.title = evaluation.content[i].title[0];
-						console.log("title:", movieElement.title);
 						movieElement.contentId = evaluation.content[i].contentId[0];
-						console.log("contentId:", movieElement.contentId);
 						movieElement.releaseTime = evaluation.content[i].releaseTime[0];
-						console.log("releaseTime:", movieElement.releaseTime);
 						movieElement.mpaaRating = evaluation.content[i].mpaaRating[0];
-						console.log("mpaaRating:", movieElement.mpaaRating);
 
 						similarMoviesArray[i] = movieElement;
 						console.log("similar movie:", JSON.stringify(movieElement));
@@ -787,6 +783,7 @@ function getSimilarMovie(text, cb) {
 			getContentSimilarSearch(vuduContent);
 		})
 		.then(function(similarMoviesArray) {
+			console.log("final then!");
 			cb({"Action": similarMoviesArray});
 		})
 		.catch(function (err) {
