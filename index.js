@@ -599,6 +599,8 @@ function getContentSimilarSearch(vuduContent) {
 						console.log("in for");
 						var movieElement = {};
 
+						console.log("test:", JSON.stringify(evaluation.content[i]));
+
 						movieElement.title = evaluation.content[i].title[0];
 						console.log("title:", movieElement.title);
 						movieElement.contentId = evaluation.content[i].contentId[0];
