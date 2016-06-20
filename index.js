@@ -879,13 +879,13 @@ function getPriceInfo(vuduContent) {
 				// get first search result
 
 				if (parseInt(totalCount) === 0) {
-				console.log('cannot find the price for contentId:' + contentId);
+					console.log('cannot find the price for contentId:' + contentId);
 				}
 				else {
 					var ptoArray = []; //[sdPrice, hdPrice, hdxPrice]
 					var ptrArray = [];
 
-					for(var i = 0; i < evaluation.content[0].contentVariants[0].contentVariant.length, i++ ) {
+					for (var i = 0; i < evaluation.content[0].contentVariants[0].contentVariant.length, i++) {
 						var videoQuality = evaluation.content[0].contentVariants[0].contentVariant[i].videoQuality[0];
 						var videoQualityInt;
 
@@ -930,7 +930,7 @@ function getPriceInfo(vuduContent) {
 		})
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
-	});
+		});
 }
 
 function getRandomInt(min, max) {
