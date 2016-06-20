@@ -885,7 +885,7 @@ function getPriceInfo(vuduContent) {
 					var ptoArray = []; //[sdPrice, hdPrice, hdxPrice]
 					var ptrArray = [];
 
-					for (var i = 0; i < evaluation.content[0].contentVariants[0].contentVariant.length, i++) {
+					for (var i = 0; i < evaluation.content[0].contentVariants[0].contentVariant.length; i++) {
 						var videoQuality = evaluation.content[0].contentVariants[0].contentVariant[i].videoQuality[0];
 						var videoQualityInt;
 
