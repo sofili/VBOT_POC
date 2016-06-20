@@ -240,9 +240,8 @@ const actions = {
     }
 
   },
-  ['find-movie'](sessionId, context, cb) {
-    context.title = getMovieInfo(context.movieTitle);
-    cb(context);
+  ['get-price'](sessionId, context, cb) {
+    getPrice(context.movieTitle, cb);
   },
   ['similar-movie'](sessionId, context, cb) {
     getSimilarMovie(context.movieTitle, cb);
@@ -688,12 +687,12 @@ function getReview(text, cb) {
 				// get first search result
 
 				if (parseInt(totalCount) === 0) {
-				console.log('cannot find a matching movie');
+					console.log('cannot find a matching movie');
 				}
 				else {
 					var vuduContent = {};
-				  	vuduContent.contentId = evaluation.content[i].contentId[0];
-			    	vuduContent.title = evaluation.content[i].title[0];
+				  	vuduContent.contentId = evaluation.content[0].contentId[0];
+			    	vuduContent.title = evaluation.content[0].title[0];
 
 			    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
 				    // Need to handle if there's no review
@@ -809,6 +808,129 @@ function getSimilarMovie(text, cb) {
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
 		});
+}
+
+function getPrice(text, cb) {
+
+	console.log('send search result for ' + text);
+	// var search = text.substring(12, text.lenght);
+	var encodedSearch = encodeURIComponent(text);
+	console.log('type of encoded search :', typeof encodedSearch);
+	console.log('encoded search: ', encodedSearch);
+
+  	var url_s = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentMetaSearch/phrase/'+ encodedSearch + '/includePreOrders/true/followup/totalCount/count/3';
+
+	rp(url_s)
+		.then(function (response) {
+			console.log('in getPrice - got response:' + response);
+			if (response) {
+				var sub = response.substring(10, response.length - 2);
+				var evaluation = eval('(' + sub + ')');
+				var totalCount = evaluation.totalCount[0];
+				console.log('totalCount:' + totalCount);
+				// get first search result
+
+				if (parseInt(totalCount) === 0) {
+				console.log('cannot find a matching movie');
+				}
+				else {
+					var vuduContent = {};
+				  	vuduContent.contentId = evaluation.content[i].contentId[0];
+			    	vuduContent.title = evaluation.content[i].title[0];
+
+			    	console.log("found it! " + vuduContent.title + "/id:" + vuduContent.contentId);
+				    // Need to handle if there's no review
+				    // console.log(JSON.stringify(msg));
+				    return vuduContent;
+				}
+			}
+			else {
+				console.log("getPrice - something went wrong");
+			}
+		})
+		.then(function(vuduContent) {
+			return getPriceInfo(vuduContent);
+		})
+		.then(function(vuduContent) {
+			cb(vuduContent);
+
+		})
+		.catch(function (err) {
+			console.log('*******Error sending message: ', err);
+		});
+
+}
+
+
+function getPriceInfo(vuduContent) {
+
+	console.log("called getPriceInfo");
+	var contentId = vuduContent.contentId;
+	var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/contentId/' + contentId + '/followup/totalCount/followup/offers';
+
+	return rp(url_review)
+		.then(function (response) {
+			console.log('in getPriceInfo - got response:' + response);
+			if (response) {
+				var sub = response.substring(10, response.length - 2);
+				var evaluation = eval('(' + sub + ')');
+				var totalCount = evaluation.totalCount[0];
+				console.log('totalCount:' + totalCount);
+				// get first search result
+
+				if (parseInt(totalCount) === 0) {
+				console.log('cannot find the price for contentId:' + contentId);
+				}
+				else {
+					var ptoArray = []; //[sdPrice, hdPrice, hdxPrice]
+					var ptrArray = [];
+
+					for(var i = 0; i < evaluation.content[0].contentVariants[0].contentVariant.length, i++ ) {
+						var videoQuality = evaluation.content[0].contentVariants[0].contentVariant[i].videoQuality[0];
+						var videoQualityInt;
+
+						if (videoQuality === "sd") {
+							videoQualityInt = 0;
+						}
+						else if (videoQuality === "hd") {
+							videoQualityInt = 1;
+						}
+						else if (videoQuality === "hdx") {
+							videoQualityInt = 2;
+						}
+						else {
+							console.log("Error with pricing, this should never happen!");
+						}
+
+						for (var j = 0; j < evaluation.content[0].contentVariants[0].contentVariant[i].offers[0].offer.length) {
+							// pto/ptr
+							var offerType = evaluation.content[0].contentVariants[0].contentVariant[i].offers[0].offer[j].offerType[0];
+
+							if (offerType === "pto") {
+								ptoArray[videoQualityInt] = evaluation.content[0].contentVariants[i].contentVariant[0].offers[0].offer[j].price[0];
+							}
+							else if(offerType === "ptr") {
+								ptrArray[videoQualityInt] = evaluation.content[0].contentVariants[i].contentVariant[0].offers[0].offer[j].price[0];
+							}
+							else {
+								console.log("get price - something wrong with offerType");
+							}
+						}
+					}
+
+					vuduContent.ptrPriceArray = ptrArray;
+					vuduContent.ptoPriceArray = ptoArray;
+
+				    return vuduContent;
+				}
+			}
+			else {
+				console.log("getTomatoReview - something went wrong");
+			}
+		})
+		.catch(function (err) {
+			console.log('*******Error sending message: ', err);
+	});
 }
 
 function getRandomInt(min, max) {
