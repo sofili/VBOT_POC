@@ -902,7 +902,7 @@ function getPriceInfo(vuduContent) {
 							console.log("Error with pricing, this should never happen!");
 						}
 
-						for (var j = 0; j < evaluation.content[0].contentVariants[0].contentVariant[i].offers[0].offer.length) {
+						for (var j = 0; j < evaluation.content[0].contentVariants[0].contentVariant[i].offers[0].offer.length; j ++) {
 							// pto/ptr
 							var offerType = evaluation.content[0].contentVariants[0].contentVariant[i].offers[0].offer[j].offerType[0];
 
