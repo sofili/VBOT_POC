@@ -646,7 +646,7 @@ function getTomatoReview(vuduContent) {
 				// get first search result
 
 				if (parseInt(totalCount) === 0) {
-				console.log('cannot find a review for contentId:' + contentId);
+					console.log('cannot find a review for contentId:' + contentId);
 				}
 				else {
 					var reviewArray = [];
@@ -710,6 +710,7 @@ function getReview(text, cb) {
 			return getMovieDetail(vuduContent);
 		})
 		.then(function (vuduContent) {
+			console.log("test:", JSON.stringify(vuduContent));
 			return getTomatoReview(vuduContent);
 		})
 		.then(function (reviewArray) {
