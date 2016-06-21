@@ -748,7 +748,7 @@ function getMovieDetail(vuduContent) {
 				  	vuduContent.tomatoMeter = evaluation.content[0].tomatoMeter[0];
 
 				  	reviewArray[0] = vuduContent;
-					//return reviewArray;
+					return reviewArray;
 				}
 			}
 			else {
