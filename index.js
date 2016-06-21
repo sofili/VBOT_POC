@@ -741,14 +741,11 @@ function getMovieDetail(vuduContent) {
 					console.log('cannot find a review for contentId:' + contentId);
 				}
 				else {
-					var reviewArray = [];
 				  	vuduContent.description = evaluation.content[0].description[0];
 				  	vuduContent.releaseTime = evaluation.content[0].releaseTime[0];
 				  	vuduContent.mpaaRating = evaluation.content[0].mpaaRating[0];
 				  	vuduContent.tomatoMeter = evaluation.content[0].tomatoMeter[0];
-
-				  	reviewArray[0] = vuduContent;
-					return reviewArray;
+					return vuduContent;
 				}
 			}
 			else {
