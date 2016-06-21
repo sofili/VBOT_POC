@@ -723,7 +723,7 @@ function getReview(text, cb) {
 function getMovieDetail(vuduContent) {
 	console.log("called getMovieDetail");
 	var contentId = vuduContent.contentId;
-	var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/contentId/' + contentId + '/followup/totalCount/followup/tomatoReviews/followup/mpaaRating';
+	var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/contentId/' + contentId + '/followup/totalCount/followup/mpaaRating';
 
 	return rp(url_review)
 		.then(function (response) {
@@ -740,10 +740,10 @@ function getMovieDetail(vuduContent) {
 				}
 				else {
 					var reviewArray = [];
-				  	vuduContent.description = evaluation.content[0].tomatoMeter[0];
-				  	vuduContent.releaseTime = evaluation.content[0].author[0];
-				  	vuduContent.mpaaRating = evaluation.content[0].source[0];
-				  	vuduContent.tomatoMeter = evaluation.content[0].url[0];
+				  	vuduContent.description = evaluation.content[0].description[0];
+				  	vuduContent.releaseTime = evaluation.content[0].releaseTime[0];
+				  	vuduContent.mpaaRating = evaluation.content[0].mpaaRating[0];
+				  	vuduContent.tomatoMeter = evaluation.content[0].tomatoMeter[0];
 
 				  	reviewArray[0] = vuduContent;
 					return reviewArray;
