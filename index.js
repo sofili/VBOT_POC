@@ -654,7 +654,7 @@ function getTomatoReview(vuduContent) {
 				  	vuduContent.reviewSource = evaluation.tomatoReview[0].source[0];
 				  	vuduContent.reviewURL = evaluation.tomatoReview[0].url[0];
 
-				    return vuduContent;
+					return vuduContent;
 				}
 			}
 			else {
@@ -707,19 +707,9 @@ function getReview(text, cb) {
 		.then(function(vuduContent) {
 			return getTomatoReview(vuduContent);
 		})
-		.then(function(vuduContent) {
-			// prepare fb msg and execute callback
-			// console.log("finally! type of contenAry:", typeof contentAry);
-			var msg = [];
-			for (var i = 0; i < 1; i++) {
-				// var vuduContent = contentAry[i];
-				msg[i] = getFBElement(vuduContent);
-				console.log("finally! " + JSON.stringify(msg[i]));
-
-			}
-			cb(vuduContent);
-
-		})
+		.then(function(vuduContent)) {
+			cb({"Action": vuduContent});
+		}
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
 		});
