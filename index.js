@@ -707,7 +707,7 @@ function getReview(text, cb) {
 			}
 		})
 		.then(function (vuduContent) {
-			return getMovieDetail(vuduContent);
+			getMovieDetail(vuduContent);
 		})
 		.then(function (vuduContent) {
 			console.log("test:", JSON.stringify(vuduContent));
