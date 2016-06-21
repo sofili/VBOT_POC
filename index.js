@@ -707,10 +707,11 @@ function getReview(text, cb) {
 			}
 		})
 		.then(function (vuduContent) {
-			getMovieDetail(vuduContent);
+			console.log("1test:", JSON.stringify(vuduContent));
+			return getMovieDetail(vuduContent);
 		})
 		.then(function (vuduContent) {
-			console.log("test:", JSON.stringify(vuduContent));
+			console.log("2test:", JSON.stringify(vuduContent));
 			return getTomatoReview(vuduContent);
 		})
 		.then(function (reviewArray) {
