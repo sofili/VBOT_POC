@@ -707,7 +707,7 @@ function getReview(text, cb) {
 		.then(function(vuduContent) {
 			return getTomatoReview(vuduContent);
 		})
-		.then(function(vuduContent)) {
+		.then(function(vuduContent) {
 			cb({"Action": vuduContent});
 		}
 		.catch(function (err) {
