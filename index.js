@@ -140,6 +140,11 @@ const actions = {
 			}
 		};
       }
+      else if (context.DefaultMsg) {
+      	msg = {
+	    	text: context.DefaultMsg,
+	    };
+      }
       else {
       	console.log("wit.ai message:", message);
       	msg = {
@@ -716,6 +721,7 @@ function getReview(text, cb) {
 			cb({"Action": reviewArray});
 		})
 		.catch(function (err) {
+			cb({"DefaultMsg": "Sorry, I am not smart enough to understand what you are saying, do you mind trying again?"});
 			console.log('*******Error sending message: ', err);
 		});
 }
