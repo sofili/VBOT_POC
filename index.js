@@ -706,13 +706,13 @@ function getReview(text, cb) {
 				console.log("getReview - something went wrong");
 			}
 		})
-		.then(function(vuduContent) {
+		.then(function (vuduContent) {
 			return getMovieDetail(vuduContent);
 		})
-		.then(function(vuduContent) {
+		.then(function (vuduContent) {
 			return getTomatoReview(vuduContent);
 		})
-		.then(function(reviewArray) {
+		.then(function (reviewArray) {
 			cb({"Action": reviewArray});
 		})
 		.catch(function (err) {
@@ -746,7 +746,7 @@ function getMovieDetail(vuduContent) {
 				  	vuduContent.tomatoMeter = evaluation.content[0].tomatoMeter[0];
 
 				  	reviewArray[0] = vuduContent;
-					return reviewArray;
+					//return reviewArray;
 				}
 			}
 			else {
