@@ -634,6 +634,7 @@ function getTomatoReview(vuduContent) {
 	var contentId = vuduContent.contentId;
 	var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/tomatoReviewSearch/contentId/' + contentId + '/sortBy/isByTopAuthor/followup/totalCount';
 
+	console.log("About to call:", url_review);
 	return rp(url_review)
 		.then(function (response) {
 			console.log('in getTomatoReview - got response:' + response);
@@ -708,7 +709,6 @@ function getReview(text, cb) {
 		.then(function(vuduContent) {
 			return getMovieDetail(vuduContent);
 		})
-
 		.then(function(vuduContent) {
 			return getTomatoReview(vuduContent);
 		})
@@ -736,7 +736,7 @@ function getMovieDetail(vuduContent) {
 				// get first search result
 
 				if (parseInt(totalCount) === 0) {
-				console.log('cannot find a review for contentId:' + contentId);
+					console.log('cannot find a review for contentId:' + contentId);
 				}
 				else {
 					var reviewArray = [];
