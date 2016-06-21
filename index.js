@@ -709,7 +709,7 @@ function getReview(text, cb) {
 		})
 		.then(function(vuduContent) {
 			cb({"Action": vuduContent});
-		}
+		})
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
 		});
