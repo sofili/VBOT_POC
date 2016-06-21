@@ -623,7 +623,7 @@ function getContentSimilarSearch(vuduContent) {
 			}
 		})
 		.catch(function (err) {
-			console.log('111*******Error sending message: ', err);
+			console.log('*******getContentSimilarSearch-Error sending message: ', err);
 	});
 
 }
@@ -664,7 +664,7 @@ function getTomatoReview(vuduContent) {
 			}
 		})
 		.catch(function (err) {
-			console.log('*******Error sending message: ', err);
+			console.log('*******getTomatoReview-Error sending message: ', err);
 	});
 }
 
@@ -707,11 +707,9 @@ function getReview(text, cb) {
 			}
 		})
 		.then(function (vuduContent) {
-			console.log("1test:", JSON.stringify(vuduContent));
 			return getMovieDetail(vuduContent);
 		})
 		.then(function (vuduContent) {
-			console.log("2test:", JSON.stringify(vuduContent));
 			return getTomatoReview(vuduContent);
 		})
 		.then(function (reviewArray) {
@@ -753,7 +751,7 @@ function getMovieDetail(vuduContent) {
 			}
 		})
 		.catch(function (err) {
-			console.log('*******Error sending message: ', err);
+			console.log('*******getMovieDetail-Error sending message: ', err);
 	});
 }
 
@@ -957,7 +955,7 @@ function getPriceInfo(vuduContent) {
 				}
 			}
 			else {
-				console.log("getTomatoReview - something went wrong");
+				console.log("getPriceInfo - something went wrong");
 			}
 		})
 		.catch(function (err) {
