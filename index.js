@@ -706,6 +706,10 @@ function getReview(text, cb) {
 			}
 		})
 		.then(function(vuduContent) {
+			return getMovieDetail(vuduContent);
+		})
+
+		.then(function(vuduContent) {
 			return getTomatoReview(vuduContent);
 		})
 		.then(function(reviewArray) {
@@ -714,6 +718,44 @@ function getReview(text, cb) {
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
 		});
+}
+
+function getMovieDetail(vuduContent) {
+	console.log("called getMovieDetail");
+	var contentId = vuduContent.contentId;
+	var url_review = 'http://apicache.vudu.com/api2/claimedAppId/myvudu/format/application*2Fjson/_type/contentSearch/contentId/' + contentId + '/followup/totalCount/followup/tomatoReviews/followup/mpaaRating';
+
+	return rp(url_review)
+		.then(function (response) {
+			console.log('in getMovieDetail - got response:' + response);
+			if (response) {
+				var sub = response.substring(10, response.length - 2);
+				var evaluation = eval('(' + sub + ')');
+				var totalCount = evaluation.totalCount[0];
+				console.log('totalCount:' + totalCount);
+				// get first search result
+
+				if (parseInt(totalCount) === 0) {
+				console.log('cannot find a review for contentId:' + contentId);
+				}
+				else {
+					var reviewArray = [];
+				  	vuduContent.description = evaluation.content[0].tomatoMeter[0];
+				  	vuduContent.releaseTime = evaluation.content[0].author[0];
+				  	vuduContent.mpaaRating = evaluation.content[0].source[0];
+				  	vuduContent.tomatoMeter = evaluation.content[0].url[0];
+
+				  	reviewArray[0] = vuduContent;
+					return reviewArray;
+				}
+			}
+			else {
+				console.log("getMovieDetail - something went wrong");
+			}
+		})
+		.catch(function (err) {
+			console.log('*******Error sending message: ', err);
+	});
 }
 
 // This should return an array
