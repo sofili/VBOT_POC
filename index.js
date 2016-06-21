@@ -739,10 +739,10 @@ function getMovieDetail(vuduContent) {
 					console.log('cannot find a review for contentId:' + contentId);
 				}
 				else {
-				  	vuduContent.description = evaluation.content[0].description[0] ?? "";
-				  	vuduContent.releaseTime = evaluation.content[0].releaseTime[0];
-				  	vuduContent.mpaaRating = evaluation.content[0].mpaaRating[0];
-				  	vuduContent.tomatoMeter = evaluation.content[0].tomatoMeter[0];
+				  	vuduContent.description = evaluation.content[0].description[0] ? evaluation.content[0].description[0] : "";
+				  	vuduContent.releaseTime = evaluation.content[0].releaseTime[0] ? evaluation.content[0].releaseTime[0] : "";
+				  	vuduContent.mpaaRating = evaluation.content[0].mpaaRating[0] ? evaluation.content[0].mpaaRating[0] : "";
+				  	vuduContent.tomatoMeter = evaluation.content[0].tomatoMeter[0] ? evaluation.content[0].tomatoMeter[0] : "";
 					return vuduContent;
 				}
 			}
@@ -770,7 +770,7 @@ function getFBElement(contents) {
 
 			var element = {
 			  "title": title,
-			  "subtitle": description ? description : "Release Date:" + vuduContent.releaseTime + " Rating:" + vuduContent.mpaaRating ,
+			  "subtitle": description.length ? description : "Release Date:" + vuduContent.releaseTime + " Rating:" + vuduContent.mpaaRating ,
 			  "image_url": "http://images2.vudu.com/poster2/" + contentId + "-l",
 			  "buttons": [{
 			    "type": "web_url",
