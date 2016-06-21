@@ -130,6 +130,7 @@ const actions = {
       var msg;
 
       if (elements) {
+      	console.log("there's data for fb");
 		msg = {
 			attachment: {
 				type: "template",
@@ -141,6 +142,7 @@ const actions = {
 		};
       }
       else if (context.DefaultMsg) {
+      	console.log("default message:", context.DefaultMsg);
       	msg = {
 	    	text: context.DefaultMsg,
 	    };
