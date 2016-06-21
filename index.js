@@ -648,13 +648,14 @@ function getTomatoReview(vuduContent) {
 				console.log('cannot find a review for contentId:' + contentId);
 				}
 				else {
-
+					var reviewArray = [];
 				  	vuduContent.reviewComment = evaluation.tomatoReview[0].comment[0];
 				  	vuduContent.reviewAuthor = evaluation.tomatoReview[0].author[0];
 				  	vuduContent.reviewSource = evaluation.tomatoReview[0].source[0];
 				  	vuduContent.reviewURL = evaluation.tomatoReview[0].url[0];
 
-					return vuduContent;
+				  	reviewArray[0] = vuduContent;
+					return reviewArray;
 				}
 			}
 			else {
@@ -707,8 +708,8 @@ function getReview(text, cb) {
 		.then(function(vuduContent) {
 			return getTomatoReview(vuduContent);
 		})
-		.then(function(vuduContent) {
-			cb({"Action": vuduContent});
+		.then(function(reviewArray) {
+			cb({"Action": reviewArray});
 		})
 		.catch(function (err) {
 			console.log('*******Error sending message: ', err);
