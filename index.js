@@ -141,17 +141,17 @@ const actions = {
 			}
 		};
       }
-      else if (message) {
-      	console.log("wit.ai message:", message);
-      	msg = {
-	    	text: message,
-	    };
-      }
       else if (context.defaultMsg) {
       	var defaultMsg = getDefaultMsg(context.defaultMsg);
       	console.log("default message:", defaultMsg);
       	msg = {
 	    	text: defaultMsg,
+	    };
+      }
+      else if (message) {
+      	console.log("wit.ai message:", message);
+      	msg = {
+	    	text: message,
 	    };
       }
       else {
