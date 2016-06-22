@@ -129,6 +129,24 @@ const actions = {
 
       var msg;
 
+      if (message) {
+
+      	console.log("wit.ai message:", message);
+      	msg = {
+	    	text: message,
+	    };
+	   	fbMessage(recipientId, msg, (err, data) => {
+		    if (err) {
+		      console.log(
+		        'Oops! An error occurred while forwarding the response to',
+		        recipientId,
+		        ':',
+		        err
+		      );
+		    }
+      	});
+      }
+
       if (elements) {
       	console.log("there's data for fb");
 		msg = {
@@ -140,37 +158,40 @@ const actions = {
 				}
 			}
 		};
+
+	   	fbMessage(recipientId, msg, (err, data) => {
+		    if (err) {
+		      console.log(
+		        'Oops! An error occurred while forwarding the response to',
+		        recipientId,
+		        ':',
+		        err
+		      );
+		    }
+      	});
       }
-      else if (context.defaultMsg) {
-      	var defaultMsg = getDefaultMsg(context);
-      	console.log("default message:", defaultMsg);
-      	msg = {
+
+    if (context.defaultMsg) {
+	  	var defaultMsg = getDefaultMsg(context);
+	  	console.log("default message:", defaultMsg);
+	  	msg = {
 	    	text: defaultMsg,
 	    };
-      }
-      else if (message) {
-      	console.log("wit.ai message:", message);
-      	msg = {
-	    	text: message,
-	    };
-      }
-      else {
-      	console.log("Need else for fb");
-      }
 
-      fbMessage(recipientId, msg, (err, data) => {
-        if (err) {
-          console.log(
-            'Oops! An error occurred while forwarding the response to',
-            recipientId,
-            ':',
-            err
-          );
-        }
+	   	fbMessage(recipientId, msg, (err, data) => {
+		    if (err) {
+		      console.log(
+		        'Oops! An error occurred while forwarding the response to',
+		        recipientId,
+		        ':',
+		        err
+		      );
+		    }
+      	});
+    }
 
-        // Let's give the wheel back to our bot
-        cb();
-      });
+       // Let's give the wheel back to our bot
+       cb();
     } else {
       console.log('Oops! Couldn\'t find user for session:', sessionId);
       // Giving the wheel back to our bot
@@ -772,7 +793,6 @@ function getDefaultMsg(msgDict) {
 	else {
 		console.log("something is wrong with default msg");
 	}
-
 }
 
 function getMovieDetail(vuduContent) {
