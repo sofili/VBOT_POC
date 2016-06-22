@@ -141,17 +141,21 @@ const actions = {
 			}
 		};
       }
-      else if (context.DefaultMsg) {
-      	console.log("default message:", context.DefaultMsg);
-      	msg = {
-	    	text: context.DefaultMsg,
-	    };
-      }
-      else {
+      else if (message) {
       	console.log("wit.ai message:", message);
       	msg = {
 	    	text: message,
 	    };
+      }
+      else if (context.defaultMsg) {
+      	var defaultMsg = getDefaultMsg(context.defaultMsg);
+      	console.log("default message:", defaultMsg);
+      	msg = {
+	    	text: defaultMsg,
+	    };
+      }
+      else {
+      	console.log("Need else for fb");
       }
 
       fbMessage(recipientId, msg, (err, data) => {
@@ -723,9 +727,35 @@ function getReview(text, cb) {
 			cb({"Action": reviewArray});
 		})
 		.catch(function (err) {
-			cb({"DefaultMsg": "Sorry, I am not smart enough to understand what you are saying, do you mind trying again?"});
+			cb(setDefaultMsg());
 			console.log('*******Error sending message: ', err);
 		});
+}
+
+function setDefaultMsg() {
+
+	var msg = {
+		defaultMsg: [
+		"Sorry, I am not smart enough to understand what you are saying, do you mind trying again?",
+		"Sorry, a human being will look through all the messages and provide the right support.",
+		"Sorry, are you asking anything regarding to movies or TVs? Perhaps try different ones?"]
+
+	}
+
+	return msg;
+}
+
+function getDefaultMsg(msgDict) {
+	var msgArray = msgDict["defaultMsg"];
+
+	if (msgArray) {
+		var randomNum = getRandomInt(0, msgArray.length - 1);
+		return msgArray[randomNum];
+	}
+	else {
+		console.log("something is wrong with default msg");
+	}
+
 }
 
 function getMovieDetail(vuduContent) {
