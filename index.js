@@ -762,6 +762,7 @@ function setDefaultMsg() {
 }
 
 function getDefaultMsg(msgDict) {
+	console.log("getDefaultsg:", JSON.stringify(msgDict));
 	var msgArray = msgDict["defaultMsg"];
 
 	if (msgArray) {
