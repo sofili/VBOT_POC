@@ -142,7 +142,7 @@ const actions = {
 		};
       }
       else if (context.defaultMsg) {
-      	var defaultMsg = getDefaultMsg(context.defaultMsg);
+      	var defaultMsg = getDefaultMsg(context);
       	console.log("default message:", defaultMsg);
       	msg = {
 	    	text: defaultMsg,
