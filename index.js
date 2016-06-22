@@ -251,6 +251,9 @@ const actions = {
     }
 
   },
+  ['greeting'](sessionId, context, cb) {
+  	getGreetingMsg(cb);
+  },
   ['get-price'](sessionId, context, cb) {
     getPrice(context.movieTitle, cb);
   },
@@ -440,6 +443,19 @@ function callSendAPI(messageData) {
       console.error(error);
     }
   });
+}
+
+function getGreetingMsg(cb) {
+	var msg = [
+	"Hello! I hope you are gaving an awesome day!",
+	"G'day mate!",
+	"Hello! Today is just awesome, isn't it?",
+	"Hi to you :)",
+	"Hello there!",
+	"Hi there!"
+	];
+
+	cb({"defaultMsg": msg});
 }
 
 function sendSearchResult(text) {
