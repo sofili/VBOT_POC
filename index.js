@@ -846,7 +846,7 @@ function getFBElement(contents) {
 
 			var element = {
 			  "title": title,
-			  "subtitle": description.length ? description : "Release Date:" + vuduContent.releaseTime + " Rating:" + vuduContent.mpaaRating ,
+			  "subtitle": (description != null) ? description : "Release Date:" + vuduContent.releaseTime + " Rating:" + vuduContent.mpaaRating ,
 			  "image_url": "http://images2.vudu.com/poster2/" + contentId + "-l",
 			  "buttons": [{
 			    "type": "web_url",
