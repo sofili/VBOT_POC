@@ -220,6 +220,7 @@ const actions = {
   ['fetch-top-movies'](sessionId, context, cb) {
     // Here should go the api call, e.g.:
     // context.forecast = apiCall(context.loc)
+    console.log('*********intent:fetch-top-movies');
     getTopMovie(cb);
 
   },
@@ -227,7 +228,7 @@ const actions = {
     var intent = context.intent;
     var movieTitle = context.movieTitle;
 
-    console.log('intent:' + intent);
+    console.log('*********intent:' + intent);
     console.log('movieTitle:' + movieTitle);
 
     if (intent == 'watch') {
@@ -273,12 +274,15 @@ const actions = {
 
   },
   ['greeting'](sessionId, context, cb) {
+    console.log("*********indent:greeting");
   	getGreetingMsg(cb);
   },
   ['get-price'](sessionId, context, cb) {
+    console.log("*********indent:get-price");
     getPrice(context.movieTitle, cb);
   },
   ['similar-movie'](sessionId, context, cb) {
+    console.log("*********indent:similar-movie");
     getSimilarMovie(context.movieTitle, cb);
   }
 };
