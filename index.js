@@ -860,6 +860,7 @@ function getFBElement(contents) {
 		return outputArray;
 	}
 	else {
+    console.log("in getFBElement-else");
 		// No custom action data found, could be wit.ai reply
 		return;
 	}
