@@ -835,7 +835,8 @@ function getFBElement(contents) {
 	var msgArray = contents["Action"];
 	var outputArray = [];
 
-	if (msgArray) {
+	if (msgArray != null) {
+    console.log("in getFBElement-if");
 		for (var i = 0; i < msgArray.length; i++) {
 			var vuduContent = msgArray[i];
 
