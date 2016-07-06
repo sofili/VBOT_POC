@@ -207,6 +207,7 @@ const actions = {
 
     const intent = firstEntityValue(entities, 'intent');
     if (intent) {
+      console.log('*********intent:' + intent);
       context.intent = intent;
     }
     cb(context);
